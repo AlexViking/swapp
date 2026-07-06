@@ -1,0 +1,77 @@
+/* ============================================================
+   Cancel screen — bottom sheet
+   ============================================================ */
+
+/* Reason rows */
+.cancel-reason-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 4px;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background 140ms;
+  outline: none;
+}
+
+.cancel-reason-row:hover {
+  background: var(--surface-alt);
+}
+
+.cancel-reason-row.selected .radio {
+  border-color: var(--green);
+  background: var(--green-soft);
+}
+
+.cancel-reason-row.selected .radio::after {
+  content: '';
+  display: block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--green);
+  margin: auto;
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.cancel-reason-row span {
+  font-family: 'Karla', sans-serif;
+  font-size: 15px;
+  color: var(--text-primary);
+  line-height: 1.4;
+}
+
+/* Note textarea */
+.cancel-note {
+  margin-top: 4px;
+  width: 100%;
+}
+
+/* Title */
+.cancel-title {
+  font-family: 'Quicksand', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 8px;
+}
+
+/* Sub */
+.cancel-sub {
+  font-family: 'Karla', sans-serif;
+  font-size: 15px;
+  color: var(--text-secondary);
+  margin: 0 0 20px;
+  line-height: 1.5;
+}
+
+/* Reasons list */
+.cancel-reasons {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 16px;
+  width: 100%;
+}

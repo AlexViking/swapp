@@ -1,0 +1,251 @@
+/* ============================================================
+   Layout — fluid 3-column desktop grid + mobile single panel
+   ============================================================ */
+
+/* ── Root / body ──────────────────────────────────────────── */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* prevent body scroll — panels scroll internally */
+}
+
+/* ── Auth view (full-screen overlay, above everything) ────── */
+
+#auth-view {
+  position: fixed;
+  inset: 0;
+  z-index: 400;
+  overflow-y: auto;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+}
+
+#auth-view.hidden { display: none; }
+
+/* ── Main app shell ───────────────────────────────────────── */
+
+#main-app {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+#main-app.hidden { display: none; }
+
+/* ── 3-column viewport (desktop) ─────────────────────────── */
+
+#main-app-viewport {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+
+  /* Fluid columns: left min 260px max 320px, right min 300px max 380px, centre gets the rest */
+  display: grid;
+  grid-template-columns:
+    clamp(260px, 25vw, 320px)
+    1fr
+    clamp(300px, 28vw, 380px);
+
+  border-top: 1px solid var(--line-solid);
+  /* Reserve space for tab bar */
+  padding-bottom: calc(60px + env(safe-area-inset-bottom));
+}
+
+/* Panel base */
+#left-nav-panel,
+#center-swipe-panel,
+#right-chat-panel {
+  position: relative;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
+#left-nav-panel   { border-right: 1px solid var(--line-solid); }
+#right-chat-panel { border-left:  1px solid var(--line-solid); }
+
+/* ── Mobile: single visible panel ────────────────────────── */
+
+@media (max-width: 768px) {
+  #main-app-viewport {
+    display: block;  /* stack panels, only one shown at a time */
+    position: relative;
+    padding-bottom: 0;
+  }
+
+  #left-nav-panel,
+  #center-swipe-panel,
+  #right-chat-panel {
+    display: none;
+    position: absolute;
+    inset: 0;
+    border: none;
+    height: 100%;
+    /* Reserve space for tab bar */
+    padding-bottom: calc(60px + env(safe-area-inset-bottom));
+  }
+
+  #main-app-viewport .mobile-visible {
+    display: block !important;
+  }
+}
+
+/* ── Tab bar ──────────────────────────────────────────────── */
+
+.tab-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: var(--surface);
+  border-top: 1px solid var(--line-solid);
+}
+
+.tab-bar.hidden { display: none !important; }
+
+.tab-bar-inner {
+  display: flex;
+  align-items: stretch;
+  height: 60px;
+  padding-bottom: env(safe-area-inset-bottom);
+  max-width: 600px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.tab-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-muted);
+  font-family: 'Quicksand', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  transition: color var(--dur-fast, 140ms);
+  padding: 6px 4px;
+  min-width: 0;
+}
+
+.tab-item i {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+}
+
+.tab-item i svg {
+  width: 22px;
+  height: 22px;
+}
+
+.tab-item span {
+  font-size: 10px;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.tab-item--active {
+  color: var(--green);
+}
+
+.tab-item--active i svg {
+  stroke-width: 2.5;
+}
+
+/* Centre Add pill */
+.tab-item--add {
+  flex-shrink: 0;
+  width: 56px;
+  align-self: center;
+  background: var(--green);
+  border-radius: 999px;
+  color: #fff;
+  height: 48px;
+  margin: 0 8px;
+  box-shadow: 0 2px 8px rgba(47, 106, 82, 0.28);
+  transition: background var(--dur-fast, 140ms);
+  padding: 0;
+}
+
+.tab-item--add:hover { background: var(--green-dark); }
+
+.tab-item--add i,
+.tab-item--add i svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* ── Chat idle placeholder (right panel) ──────────────────── */
+
+.chat-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: 12px;
+  color: var(--text-muted);
+  text-align: center;
+  padding: 32px;
+}
+
+.chat-placeholder-icon {
+  width: 40px;
+  height: 40px;
+  opacity: 0.5;
+  color: var(--text-muted);
+}
+
+.chat-placeholder-text {
+  font-family: 'Karla', sans-serif;
+  font-size: 14px;
+  color: var(--text-muted);
+  max-width: 200px;
+  line-height: 1.5;
+}
+
+/* ── Overlays ─────────────────────────────────────────────── */
+
+/* Match overlay */
+#match-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+}
+#match-overlay.hidden { display: none; }
+
+/* City modal */
+#city-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+#city-modal-overlay.hidden { display: none; }
+
+/* Photo viewer */
+#photo-viewer {
+  position: fixed;
+  inset: 0;
+  z-index: 600;
+}
+#photo-viewer.hidden { display: none; }

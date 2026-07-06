@@ -1,0 +1,187 @@
+/* ============================================================
+   Activity feed screen
+   ============================================================ */
+
+.activity-screen {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* ── Header ───────────────────────────────────────────────── */
+
+.activity-header {
+  padding: 20px 20px 12px;
+  flex-shrink: 0;
+}
+
+.activity-header h2 {
+  font-family: 'Quicksand', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+/* ── Scroll body ──────────────────────────────────────────── */
+
+.activity-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 16px 16px;
+}
+
+/* ── Day groups ───────────────────────────────────────────── */
+
+.activity-day-group {
+  margin-bottom: 8px;
+}
+
+.activity-day-label {
+  font-family: 'Quicksand', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  padding: 16px 4px 8px;
+}
+
+/* ── Activity row ─────────────────────────────────────────── */
+
+.activity-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 4px;
+}
+
+.activity-row--tappable {
+  cursor: pointer;
+  border-radius: 10px;
+  transition: background 140ms;
+}
+.activity-row--tappable:hover  { background: var(--surface-alt); }
+
+/* ── Avatar ───────────────────────────────────────────────── */
+
+.activity-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1.5px solid var(--ink-14);
+  background: var(--surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--text-secondary);
+}
+
+.activity-avatar svg {
+  width: 18px;
+  height: 18px;
+}
+
+.activity-avatar--heart {
+  border-color: var(--green);
+  color: var(--green);
+}
+
+.activity-avatar--swap {
+  border-color: var(--ink-14);
+  color: var(--text-secondary);
+}
+
+.activity-avatar--star {
+  border-color: var(--brass);
+  color: var(--text-primary);
+}
+
+.activity-avatar--eye {
+  opacity: 0.6;
+}
+
+/* ── Body text ────────────────────────────────────────────── */
+
+.activity-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.activity-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.activity-sub {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── Right col ────────────────────────────────────────────── */
+
+.activity-right {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+
+.activity-thumb {
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  background: var(--surface-alt) center / cover;
+  border: 1px solid var(--line-solid);
+}
+
+.activity-chat-btn {
+  padding: 5px 14px;
+  border-radius: 999px;
+  background: var(--green);
+  color: #fff;
+  font-family: 'Quicksand', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  transition: background 140ms;
+}
+.activity-chat-btn:hover { background: var(--green-dark); }
+
+/* ── Empty state ──────────────────────────────────────────── */
+
+.activity-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 56px 28px;
+  gap: 10px;
+}
+
+.activity-empty h3 {
+  font-family: 'Quicksand', sans-serif;
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.activity-empty p {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin: 0;
+  max-width: 220px;
+}

@@ -1,0 +1,51 @@
+/* ============================================================
+   Design Tokens — Swapp Design System
+   ============================================================ */
+:root {
+  /* Brand colours */
+  --green:        #2F6A52;
+  --green-dark:   #285C47;
+  --green-soft:   #E2ECE7;
+  --parchment:    #F7F2E1;
+  --ink:          #33322B;
+  --ink-14:       rgba(51,50,43,0.14);
+  --brass:        #E9BE8C;
+  --brass-dark:   #E3B279;
+  --terracotta:   #C97C5E;
+  --denim:        #4E6FA3;
+
+  /* Text hierarchy */
+  --text-primary:   #33322B;
+  --text-secondary: #5C5A4E;
+  --text-muted:     #8C8A7A;
+  --text-faint:     #B4B29E;
+
+  /* Surfaces */
+  --bg:           #F7F2E1;
+  --surface:      #FFFFFF;
+  --surface-alt:  #F0EBD8;
+  --line:         rgba(51,50,43,0.14);
+  --line-solid:   #E2DCC8;
+
+  /* Danger */
+  --danger:       #A05340;
+  --danger-soft:  #F5E8E4;
+
+  /* Border radii */
+  --r-btn:    999px;
+  --r-input:  12px;
+  --r-card:   14px;
+  --r-chip:   999px;
+  --r-sheet:  18px;
+
+  /* Shadows — warm, papery */
+  --shadow-card: 0 2px 12px rgba(51,50,43,0.10), 0 0 0 1px var(--ink-14);
+  --shadow-btn:  0 2px 8px rgba(47,106,82,0.20);
+  --shadow-fab:  0 4px 16px rgba(51,50,43,0.16);
+
+  /* Transitions */
+  --ease-out: cubic-bezier(0.2, 0.0, 0.0, 1.0);
+  --dur-fast: 140ms;
+  --dur-mid:  200ms;
+  --dur-slow: 240ms;
+}
