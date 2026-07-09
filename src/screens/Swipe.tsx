@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router'
 import { MapPin, X, Heart, Plus, Camera } from 'lucide-react'
-import { motion, useMotionValue, useTransform } from 'framer-motion'
+import { motion, useMotionValue, useTransform, animate } from 'framer-motion'
 import { TabBar } from '../components/TabBar'
 import { DesktopNav } from '../components/DesktopNav'
 import { supabase } from '../lib/supabase'
@@ -199,6 +199,20 @@ export function Swipe() {
 
   const topCard = cards[0]
 
+  // Animate card off screen then call the action
+  const flyAndLike = () => {
+    animate(x, 600, { duration: 0.25, ease: 'easeOut' }).then(() => {
+      handleLike()
+      x.set(0)
+    })
+  }
+  const flyAndPass = () => {
+    animate(x, -600, { duration: 0.25, ease: 'easeOut' }).then(() => {
+      handlePass()
+      x.set(0)
+    })
+  }
+
   const handleLike = async () => {
     if (!topCard || !userId) return
     if (!selectedOffer) {
@@ -238,8 +252,8 @@ export function Swipe() {
   // Keyboard: left arrow → pass, right arrow → like
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
-      if (e.key === 'ArrowLeft') handlePass()
-      if (e.key === 'ArrowRight') handleLike()
+      if (e.key === 'ArrowLeft') flyAndPass()
+      if (e.key === 'ArrowRight') flyAndLike()
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
@@ -401,13 +415,32 @@ export function Swipe() {
                   cursor: 'grab',
                   touchAction: 'none',
                 }}
+                onDrag={(_, info) => {
+                  // Auto-fly if velocity is high enough (flick gesture)
+                  if (Math.abs(info.velocity.x) > 500) {
+                    const dir = info.velocity.x > 0 ? 1 : -1
+                    animate(x, dir * 600, { duration: 0.3, ease: 'easeOut' }).then(() => {
+                      if (dir > 0) handleLike(); else handlePass()
+                      x.set(0)
+                    })
+                  }
+                }}
                 onDragEnd={(_, info) => {
                   if (info.offset.x > 120) {
-                    handleLike()
+                    // Cross threshold — fly off to the right
+                    animate(x, 600, { duration: 0.25, ease: 'easeOut' }).then(() => {
+                      handleLike()
+                      x.set(0)
+                    })
                   } else if (info.offset.x < -120) {
-                    handlePass()
+                    // Cross threshold — fly off to the left
+                    animate(x, -600, { duration: 0.25, ease: 'easeOut' }).then(() => {
+                      handlePass()
+                      x.set(0)
+                    })
                   } else {
-                    x.set(0)
+                    // Snap back to center
+                    animate(x, 0, { type: 'spring', stiffness: 300, damping: 25 })
                   }
                 }}
               >
@@ -552,7 +585,7 @@ export function Swipe() {
             style={{ display: 'flex', gap: 32, justifyContent: 'center', alignItems: 'center' }}
           >
             <button
-              onClick={handlePass}
+              onClick={flyAndPass}
               disabled={!topCard}
               style={{
                 width: 64, height: 64, borderRadius: '50%',
@@ -567,7 +600,7 @@ export function Swipe() {
               <X size={28} color="var(--terracotta)" />
             </button>
             <button
-              onClick={handleLike}
+              onClick={flyAndLike}
               disabled={!topCard}
               style={{
                 width: 64, height: 64, borderRadius: '50%',
@@ -590,7 +623,7 @@ export function Swipe() {
           >
             <div style={{ display: 'flex', gap: 40, alignItems: 'center' }}>
               <button
-                onClick={handlePass}
+                onClick={flyAndPass}
                 disabled={!topCard}
                 style={{
                   width: 60, height: 60, borderRadius: '50%',
@@ -605,7 +638,7 @@ export function Swipe() {
                 <X size={24} color="var(--terracotta)" />
               </button>
               <button
-                onClick={handleLike}
+                onClick={flyAndLike}
                 disabled={!topCard}
                 style={{
                   width: 60, height: 60, borderRadius: '50%',
