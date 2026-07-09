@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router'
-import { Settings, Plus } from 'lucide-react'
+import { Settings, Plus, Trash2, X } from 'lucide-react'
 import { TabBar } from '../components/TabBar'
 import { DesktopNav } from '../components/DesktopNav'
 import { Avatar } from '../components/Avatar'
 import { Button } from '../components/Button'
 import { Card } from '../components/Card'
+import { Sheet } from '../components/Sheet'
 import { useAuthStore } from '../store/auth'
-import { getProfile, updateProfile, getMyItems, signOut } from '../lib/api'
+import { getProfile, updateProfile, getMyItems, signOut, deleteItem } from '../lib/api'
 
 type ProfileData = {
   name: string
@@ -32,6 +33,9 @@ export function Profile() {
   const [items, setItems] = useState<ItemData[]>([])
   const [radius, setRadius] = useState(15)
   const [loading, setLoading] = useState(true)
+  const [manageMode, setManageMode] = useState(false)
+  const [selectedItem, setSelectedItem] = useState<ItemData | null>(null)
+  const [deleting, setDeleting] = useState(false)
 
   useEffect(() => {
     if (!userId) return
@@ -65,6 +69,18 @@ export function Profile() {
   async function handleSignOut() {
     await signOut()
     navigate('/')
+  }
+
+  async function handleDeleteItem(item: ItemData) {
+    setDeleting(true)
+    try {
+      await deleteItem(item.id)
+      setItems((prev) => prev.filter((i) => i.id !== item.id))
+      setSelectedItem(null)
+      setManageMode(false)
+    } finally {
+      setDeleting(false)
+    }
   }
 
   const swapCount = profile?.swap_count ?? 0
@@ -150,20 +166,28 @@ export function Profile() {
         <div>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
             <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '16px' }}>On the table</div>
-            <button style={{ background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '14px', color: 'var(--swapp-green)' }}>
-              Manage
+            <button
+              onClick={() => setManageMode((m) => !m)}
+              style={{ background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '14px', color: manageMode ? 'var(--terracotta)' : 'var(--swapp-green)' }}
+            >
+              {manageMode ? 'Done' : 'Manage'}
             </button>
           </div>
           <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
             {items.map((item) => (
-              <div
+              <button
                 key={item.id}
+                onClick={() => manageMode ? setSelectedItem(item) : setSelectedItem(item)}
                 style={{
+                  position: 'relative',
                   width: '78px',
                   height: '78px',
                   borderRadius: 'var(--radius-card-sm)',
                   background: 'var(--parchment-deep)',
                   overflow: 'hidden',
+                  border: 'none',
+                  cursor: 'pointer',
+                  padding: 0,
                 }}
               >
                 {item.images?.[0] ? (
@@ -171,7 +195,16 @@ export function Profile() {
                 ) : (
                   <div style={{ width: '100%', height: '100%', background: 'var(--parchment-deep)' }} />
                 )}
-              </div>
+                {manageMode && (
+                  <div style={{
+                    position: 'absolute', inset: 0,
+                    background: 'rgba(0,0,0,0.35)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  }}>
+                    <Trash2 size={20} color="#fff" />
+                  </div>
+                )}
+              </button>
             ))}
             <button
               onClick={() => navigate('/add')}
@@ -201,6 +234,50 @@ export function Profile() {
       <div className="mobile-tab-bar">
         <TabBar active="profile" />
       </div>
+
+      {/* Item detail / delete sheet */}
+      <Sheet open={!!selectedItem} onClose={() => setSelectedItem(null)}>
+        {selectedItem && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            {/* Preview */}
+            <div style={{ width: '100%', aspectRatio: '4/3', borderRadius: 'var(--radius-card)', overflow: 'hidden', background: 'var(--parchment-deep)' }}>
+              {selectedItem.images?.[0]
+                ? <img src={selectedItem.images[0]} alt={selectedItem.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                : <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)', fontSize: 14 }}>No photo</div>
+              }
+            </div>
+            <h3 style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '20px', margin: 0 }}>
+              {selectedItem.title}
+            </h3>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              <Button
+                variant="ghost"
+                size="md"
+                fullWidth
+                onClick={() => { setSelectedItem(null); navigate('/add') }}
+              >
+                Edit item
+              </Button>
+              <Button
+                variant="danger"
+                size="md"
+                fullWidth
+                disabled={deleting}
+                onClick={() => handleDeleteItem(selectedItem)}
+              >
+                <Trash2 size={16} />
+                {deleting ? 'Removing…' : 'Remove from table'}
+              </Button>
+              <button
+                onClick={() => setSelectedItem(null)}
+                style={{ background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '14px', color: 'var(--text-muted)', padding: '8px' }}
+              >
+                <X size={14} style={{ marginRight: 4 }} /> Cancel
+              </button>
+            </div>
+          </div>
+        )}
+      </Sheet>
     </div>
   )
 }
