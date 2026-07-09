@@ -93,6 +93,113 @@ function AddThumb({ onClick }: { onClick: () => void }) {
   )
 }
 
+// Isolated card component — owns its own motion values so parent never re-renders during drag
+function SwipeCard({ item, constraintsRef, onLike, onPass }: {
+  item: Item
+  constraintsRef: React.RefObject<HTMLDivElement | null>
+  onLike: () => void
+  onPass: () => void
+}) {
+  const x = useMotionValue(0)
+  const rotate = useTransform(x, [-200, 0, 200], [-15, 0, 15])
+  const likeOpacity = useTransform(x, [20, 100], [0, 1])
+  const nopeOpacity = useTransform(x, [-100, -20], [1, 0])
+
+  const fly = (dir: 1 | -1, cb: () => void) => {
+    animate(x, dir * 600, { duration: 0.2, ease: 'easeOut' }).then(() => {
+      cb()
+    })
+  }
+
+  return (
+    <motion.div
+      key={item.id}
+      drag="x"
+      dragConstraints={constraintsRef}
+      dragElastic={0.8}
+      style={{
+        x, rotate,
+        position: 'absolute', inset: 0,
+        background: 'var(--surface-card)',
+        borderRadius: 20,
+        zIndex: 10,
+        overflow: 'hidden',
+        display: 'flex',
+        flexDirection: 'column',
+        boxShadow: 'var(--shadow-float)',
+        cursor: 'grab',
+        touchAction: 'none',
+        userSelect: 'none',
+      }}
+      onDragEnd={(_, info) => {
+        const { offset, velocity } = info
+        if (offset.x > 100 || velocity.x > 400) {
+          fly(1, onLike)
+        } else if (offset.x < -100 || velocity.x < -400) {
+          fly(-1, onPass)
+        } else {
+          animate(x, 0, { type: 'spring', stiffness: 400, damping: 30 })
+        }
+      }}
+    >
+      {/* Photo — 60% of card */}
+      <div style={{
+        height: '60%', flexShrink: 0, position: 'relative',
+        background: 'var(--terracotta)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+      }}>
+        {item.images?.[0]
+          ? <img src={item.images[0]} alt={item.title} style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'absolute', inset: 0 }} />
+          : <Camera size={56} color="rgba(251,248,238,0.8)" />
+        }
+        {/* LIKE overlay */}
+        <motion.div style={{
+          opacity: likeOpacity, position: 'absolute', top: 16, left: 16,
+          border: '3px solid #22c55e', borderRadius: 8, padding: '4px 12px',
+          pointerEvents: 'none', transform: 'rotate(-15deg)',
+        }}>
+          <span style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 28, color: '#22c55e', textTransform: 'uppercase' }}>LIKE</span>
+        </motion.div>
+        {/* NOPE overlay */}
+        <motion.div style={{
+          opacity: nopeOpacity, position: 'absolute', top: 16, right: 16,
+          border: '3px solid #ef4444', borderRadius: 8, padding: '4px 12px',
+          pointerEvents: 'none', transform: 'rotate(15deg)',
+        }}>
+          <span style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 28, color: '#ef4444', textTransform: 'uppercase' }}>NOPE</span>
+        </motion.div>
+        {/* Badges */}
+        <div style={{ position: 'absolute', bottom: 12, left: 12 }}>
+          <span style={{ background: 'var(--brass)', color: 'var(--ink)', fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 11, letterSpacing: '0.1em', textTransform: 'uppercase', padding: '4px 10px', borderRadius: 'var(--radius-pill)' }}>
+            {conditionLabel(item.condition)} condition
+          </span>
+        </div>
+        <div style={{ position: 'absolute', bottom: 12, right: 12 }}>
+          <span style={{ background: 'var(--terracotta)', color: 'white', fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 11, letterSpacing: '0.1em', textTransform: 'uppercase', padding: '4px 10px', borderRadius: 'var(--radius-pill)' }}>
+            3 eyeing this
+          </span>
+        </div>
+      </div>
+      {/* Info */}
+      <div style={{ padding: '14px 16px 16px', flex: 1, display: 'flex', flexDirection: 'column', gap: 6 }}>
+        <h3 style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 20, color: 'var(--ink)', margin: 0 }}>
+          {item.title}
+        </h3>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'var(--text-muted)', fontSize: 14, fontFamily: 'var(--font-body)' }}>
+          <MapPin size={13} color="var(--swapp-green)" />
+          {item.location_city ?? 'Nearby'} · {item.ownerName ?? 'Swapper'}
+          {item.ownerRating ? ` · ★ ${item.ownerRating}` : ''}
+        </div>
+        {item.wants_in_return?.length > 0 && (
+          <p style={{ fontFamily: 'var(--font-body)', fontSize: 14, color: 'var(--text-muted)', margin: 0 }}>
+            Wants: {item.wants_in_return.slice(0, 3).join(', ')}…
+          </p>
+        )}
+      </div>
+    </motion.div>
+  )
+}
+
 function LocationChip({ city }: { city: string }) {
   return (
     <button
@@ -131,10 +238,6 @@ export function Swipe() {
 
   // Drag-to-swipe
   const constraintsRef = useRef<HTMLDivElement>(null)
-  const x = useMotionValue(0)
-  const rotate = useTransform(x, [-200, 0, 200], [-15, 0, 15])
-  const likeOpacity = useTransform(x, [20, 100], [0, 1])
-  const nopeOpacity = useTransform(x, [-100, -20], [1, 0])
 
   useEffect(() => {
     if (!userId) return
@@ -199,20 +302,6 @@ export function Swipe() {
 
   const topCard = cards[0]
 
-  // Animate card off screen then call the action
-  const flyAndLike = () => {
-    animate(x, 600, { duration: 0.25, ease: 'easeOut' }).then(() => {
-      handleLike()
-      x.set(0)
-    })
-  }
-  const flyAndPass = () => {
-    animate(x, -600, { duration: 0.25, ease: 'easeOut' }).then(() => {
-      handlePass()
-      x.set(0)
-    })
-  }
-
   const handleLike = async () => {
     if (!topCard || !userId) return
     if (!selectedOffer) {
@@ -252,8 +341,8 @@ export function Swipe() {
   // Keyboard: left arrow → pass, right arrow → like
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
-      if (e.key === 'ArrowLeft') flyAndPass()
-      if (e.key === 'ArrowRight') flyAndLike()
+      if (e.key === 'ArrowLeft') handlePass()
+      if (e.key === 'ArrowRight') handleLike()
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
@@ -396,140 +485,13 @@ export function Swipe() {
                 <p style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-display)', fontWeight: 600 }}>Loading…</p>
               </div>
             ) : topCard ? (
-              <motion.div
+              <SwipeCard
                 key={topCard.id}
-                drag="x"
-                dragConstraints={constraintsRef}
-                dragElastic={0.7}
-                style={{
-                  x,
-                  rotate,
-                  position: 'absolute', inset: 0,
-                  background: 'var(--surface-card)',
-                  borderRadius: 20,
-                  zIndex: 10,
-                  overflow: 'hidden',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  boxShadow: 'var(--shadow-float)',
-                  cursor: 'grab',
-                  touchAction: 'none',
-                }}
-                onDrag={(_, info) => {
-                  // Auto-fly if velocity is high enough (flick gesture)
-                  if (Math.abs(info.velocity.x) > 500) {
-                    const dir = info.velocity.x > 0 ? 1 : -1
-                    animate(x, dir * 600, { duration: 0.3, ease: 'easeOut' }).then(() => {
-                      if (dir > 0) handleLike(); else handlePass()
-                      x.set(0)
-                    })
-                  }
-                }}
-                onDragEnd={(_, info) => {
-                  if (info.offset.x > 120) {
-                    // Cross threshold — fly off to the right
-                    animate(x, 600, { duration: 0.25, ease: 'easeOut' }).then(() => {
-                      handleLike()
-                      x.set(0)
-                    })
-                  } else if (info.offset.x < -120) {
-                    // Cross threshold — fly off to the left
-                    animate(x, -600, { duration: 0.25, ease: 'easeOut' }).then(() => {
-                      handlePass()
-                      x.set(0)
-                    })
-                  } else {
-                    // Snap back to center
-                    animate(x, 0, { type: 'spring', stiffness: 300, damping: 25 })
-                  }
-                }}
-              >
-                {/* Photo — 60% of card */}
-                <div style={{
-                  height: '60%', flexShrink: 0, position: 'relative',
-                  background: 'var(--terracotta)',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                }}>
-                  {topCard.images?.[0]
-                    ? <img src={topCard.images[0]} alt={topCard.title} style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'absolute', inset: 0 }} />
-                    : <Camera size={56} color="rgba(251,248,238,0.8)" />
-                  }
-                  {/* LIKE overlay — right drag */}
-                  <motion.div
-                    style={{
-                      opacity: likeOpacity,
-                      position: 'absolute', top: 16, left: 16,
-                      border: '3px solid #22c55e',
-                      borderRadius: 8,
-                      padding: '4px 12px',
-                      pointerEvents: 'none',
-                      transform: 'rotate(-15deg)',
-                    }}
-                  >
-                    <span style={{
-                      fontFamily: 'var(--font-display)', fontWeight: 800,
-                      fontSize: 28, letterSpacing: '0.08em',
-                      color: '#22c55e', textTransform: 'uppercase',
-                    }}>LIKE</span>
-                  </motion.div>
-                  {/* NOPE overlay — left drag */}
-                  <motion.div
-                    style={{
-                      opacity: nopeOpacity,
-                      position: 'absolute', top: 16, right: 16,
-                      border: '3px solid #ef4444',
-                      borderRadius: 8,
-                      padding: '4px 12px',
-                      pointerEvents: 'none',
-                      transform: 'rotate(15deg)',
-                    }}
-                  >
-                    <span style={{
-                      fontFamily: 'var(--font-display)', fontWeight: 800,
-                      fontSize: 28, letterSpacing: '0.08em',
-                      color: '#ef4444', textTransform: 'uppercase',
-                    }}>NOPE</span>
-                  </motion.div>
-                  {/* Condition badge top-left */}
-                  <div style={{ position: 'absolute', bottom: 12, left: 12 }}>
-                    <span style={{
-                      background: 'var(--brass)', color: 'var(--ink)',
-                      fontFamily: 'var(--font-display)', fontWeight: 700,
-                      fontSize: 11, letterSpacing: '0.1em', textTransform: 'uppercase',
-                      padding: '4px 10px', borderRadius: 'var(--radius-pill)',
-                    }}>
-                      {conditionLabel(topCard.condition)} condition
-                    </span>
-                  </div>
-                  {/* Eyeing this badge top-right */}
-                  <div style={{ position: 'absolute', bottom: 12, right: 12 }}>
-                    <span style={{
-                      background: 'var(--terracotta)', color: 'white',
-                      fontFamily: 'var(--font-display)', fontWeight: 700,
-                      fontSize: 11, letterSpacing: '0.1em', textTransform: 'uppercase',
-                      padding: '4px 10px', borderRadius: 'var(--radius-pill)',
-                    }}>
-                      3 eyeing this
-                    </span>
-                  </div>
-                </div>
-                {/* Info */}
-                <div style={{ padding: '14px 16px 16px', flex: 1, display: 'flex', flexDirection: 'column', gap: 6 }}>
-                  <h3 style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 20, color: 'var(--ink)', margin: 0 }}>
-                    {topCard.title}
-                  </h3>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'var(--text-muted)', fontSize: 14, fontFamily: 'var(--font-body)' }}>
-                    <MapPin size={13} color="var(--swapp-green)" />
-                    {topCard.location_city ?? 'Nearby'} · {topCard.ownerName ?? 'Swapper'}
-                    {topCard.ownerRating ? ` · ★ ${topCard.ownerRating}` : ''}
-                  </div>
-                  {topCard.wants_in_return?.length > 0 && (
-                    <p style={{ fontFamily: 'var(--font-body)', fontSize: 14, color: 'var(--text-muted)', margin: 0 }}>
-                      Wants: {topCard.wants_in_return.slice(0, 3).join(', ')}…
-                    </p>
-                  )}
-                </div>
-              </motion.div>
+                item={topCard}
+                constraintsRef={constraintsRef}
+                onLike={handleLike}
+                onPass={handlePass}
+              />
             ) : (
               <div style={{
                 position: 'absolute', inset: 0,
@@ -585,7 +547,7 @@ export function Swipe() {
             style={{ display: 'flex', gap: 32, justifyContent: 'center', alignItems: 'center' }}
           >
             <button
-              onClick={flyAndPass}
+              onClick={handlePass}
               disabled={!topCard}
               style={{
                 width: 64, height: 64, borderRadius: '50%',
@@ -600,7 +562,7 @@ export function Swipe() {
               <X size={28} color="var(--terracotta)" />
             </button>
             <button
-              onClick={flyAndLike}
+              onClick={handleLike}
               disabled={!topCard}
               style={{
                 width: 64, height: 64, borderRadius: '50%',
@@ -623,7 +585,7 @@ export function Swipe() {
           >
             <div style={{ display: 'flex', gap: 40, alignItems: 'center' }}>
               <button
-                onClick={flyAndPass}
+                onClick={handlePass}
                 disabled={!topCard}
                 style={{
                   width: 60, height: 60, borderRadius: '50%',
@@ -638,7 +600,7 @@ export function Swipe() {
                 <X size={24} color="var(--terracotta)" />
               </button>
               <button
-                onClick={flyAndLike}
+                onClick={handleLike}
                 disabled={!topCard}
                 style={{
                   width: 60, height: 60, borderRadius: '50%',
