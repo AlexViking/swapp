@@ -241,6 +241,7 @@ export function Swipe() {
   const [loading, setLoading] = useState(true)
   const [city, setCity] = useState('Nearby')
   const [cursor, setCursor] = useState(0)
+  const [noOfferError, setNoOfferError] = useState(false)
 
   // Drag-to-swipe
   const constraintsRef = useRef<HTMLDivElement>(null)
@@ -311,9 +312,11 @@ export function Swipe() {
   const handleLike = async () => {
     if (!topCard || !userId) return
     if (!selectedOffer) {
-      alert('Pick one of your items to offer first!')
+      setNoOfferError(true)
+      setTimeout(() => setNoOfferError(false), 3000)
       return
     }
+    setNoOfferError(false)
     const { data, error } = await recordSwipe({
       swiperId: userId,
       targetItemId: topCard.id,
@@ -534,9 +537,10 @@ export function Swipe() {
             <p style={{
               fontFamily: 'var(--font-display)', fontWeight: 700,
               fontSize: 11, letterSpacing: '0.18em', textTransform: 'uppercase',
-              color: 'var(--text-muted)', margin: '0 0 10px',
+              color: noOfferError ? 'var(--terracotta)' : 'var(--text-muted)', margin: '0 0 10px',
+              transition: 'color 0.2s',
             }}>
-              Offer one of yours
+              {noOfferError ? 'Pick an item to offer first!' : 'Offer one of yours'}
             </p>
             <div style={{ display: 'flex', gap: 10, overflowX: 'auto', paddingBottom: 4 }}>
               {myItems.map((item) => (

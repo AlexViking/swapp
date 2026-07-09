@@ -29,6 +29,7 @@ export function AddItem() {
   const [photos, setPhotos] = useState<File[]>([])
   const [photoUrls, setPhotoUrls] = useState<string[]>([]) // preview URLs
   const [saving, setSaving] = useState(false)
+  const [saveError, setSaveError] = useState('')
   const fileRef = useRef<HTMLInputElement>(null)
 
   const addWant = () => {
@@ -49,10 +50,9 @@ export function AddItem() {
   }
 
   async function handleSave() {
-    if (!userId || !title) {
-      alert('Please add a title')
-      return
-    }
+    if (!title) { setSaveError('Give your item a name first'); return }
+    if (!userId) return
+    setSaveError('')
     setSaving(true)
     try {
       let cdnUrls: string[] = []
@@ -94,7 +94,7 @@ export function AddItem() {
       })
 
       if (error) {
-        alert('Failed to save item: ' + error.message)
+        setSaveError('Failed to save: ' + error.message)
         return
       }
 
@@ -320,6 +320,12 @@ export function AddItem() {
           </div>
 
           <div style={{ flex: 1 }} />
+
+          {saveError && (
+            <p style={{ color: 'var(--terracotta)', fontFamily: 'var(--font-body)', fontSize: '14px', margin: 0 }}>
+              {saveError}
+            </p>
+          )}
 
           <Button variant="primary" size="lg" fullWidth disabled={saving} onClick={handleSave}>
             {saving ? 'Saving…' : 'Put it on the table'}

@@ -10,11 +10,16 @@ export function Login() {
   const navigate = useNavigate()
   const { setPendingEmail } = useAuthStore()
   const [email, setEmail] = useState('')
+  const [error, setError] = useState('')
+  const [sending, setSending] = useState(false)
 
   const handleSubmit = async () => {
     if (!email) return
-    const { error } = await requestOTP(email)
-    if (error) { alert(error.message); return }
+    setError('')
+    setSending(true)
+    const { error: err } = await requestOTP(email)
+    setSending(false)
+    if (err) { setError(err.message); return }
     setPendingEmail(email)
     navigate('/verify')
   }
@@ -51,8 +56,14 @@ export function Login() {
 
         <div style={{ flex: 1 }} />
 
-        <Button variant="primary" size="lg" fullWidth onClick={handleSubmit}>
-          Send me a magic link
+        {error && (
+          <p style={{ color: 'var(--terracotta)', fontFamily: 'var(--font-body)', fontSize: '14px', margin: 0 }}>
+            {error}
+          </p>
+        )}
+
+        <Button variant="primary" size="lg" fullWidth disabled={sending} onClick={handleSubmit}>
+          {sending ? 'Sending…' : 'Send me a magic link'}
         </Button>
 
         <p style={{ font: 'var(--type-caption)', color: 'var(--text-muted)', textAlign: 'center' }}>
