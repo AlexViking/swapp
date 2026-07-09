@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router'
 import { MapPin, X, Heart, Plus, Camera } from 'lucide-react'
+import { motion, useMotionValue, useTransform } from 'framer-motion'
 import { TabBar } from '../components/TabBar'
 import { DesktopNav } from '../components/DesktopNav'
 import { supabase } from '../lib/supabase'
@@ -128,6 +129,13 @@ export function Swipe() {
   const [city, setCity] = useState('Nearby')
   const [cursor, setCursor] = useState(0)
 
+  // Drag-to-swipe
+  const constraintsRef = useRef<HTMLDivElement>(null)
+  const x = useMotionValue(0)
+  const rotate = useTransform(x, [-200, 0, 200], [-15, 0, 15])
+  const likeOpacity = useTransform(x, [20, 100], [0, 1])
+  const nopeOpacity = useTransform(x, [-100, -20], [1, 0])
+
   useEffect(() => {
     if (!userId) return
     loadData()
@@ -226,6 +234,16 @@ export function Swipe() {
       loadMoreCards()
     }
   }, [cards.length])
+
+  // Keyboard: left arrow → pass, right arrow → like
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (e.key === 'ArrowLeft') handlePass()
+      if (e.key === 'ArrowRight') handleLike()
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [cards, selectedOffer])
 
   async function loadMoreCards() {
     if (!userId) return
@@ -329,7 +347,7 @@ export function Swipe() {
           }}
         >
           {/* Card stack */}
-          <div style={{ position: 'relative', width: '100%', height: 440, flexShrink: 0 }}>
+          <div ref={constraintsRef} style={{ position: 'relative', width: '100%', height: 440, flexShrink: 0 }}>
             {/* Ghost cards */}
             {cards[2] && (
               <div style={{
@@ -364,16 +382,35 @@ export function Swipe() {
                 <p style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-display)', fontWeight: 600 }}>Loading…</p>
               </div>
             ) : topCard ? (
-              <div style={{
-                position: 'absolute', inset: 0,
-                background: 'var(--surface-card)',
-                borderRadius: 20,
-                zIndex: 10,
-                overflow: 'hidden',
-                display: 'flex',
-                flexDirection: 'column',
-                boxShadow: 'var(--shadow-float)',
-              }}>
+              <motion.div
+                key={topCard.id}
+                drag="x"
+                dragConstraints={constraintsRef}
+                dragElastic={0.7}
+                style={{
+                  x,
+                  rotate,
+                  position: 'absolute', inset: 0,
+                  background: 'var(--surface-card)',
+                  borderRadius: 20,
+                  zIndex: 10,
+                  overflow: 'hidden',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  boxShadow: 'var(--shadow-float)',
+                  cursor: 'grab',
+                  touchAction: 'none',
+                }}
+                onDragEnd={(_, info) => {
+                  if (info.offset.x > 120) {
+                    handleLike()
+                  } else if (info.offset.x < -120) {
+                    handlePass()
+                  } else {
+                    x.set(0)
+                  }
+                }}
+              >
                 {/* Photo — 60% of card */}
                 <div style={{
                   height: '60%', flexShrink: 0, position: 'relative',
@@ -384,8 +421,44 @@ export function Swipe() {
                     ? <img src={topCard.images[0]} alt={topCard.title} style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'absolute', inset: 0 }} />
                     : <Camera size={56} color="rgba(251,248,238,0.8)" />
                   }
+                  {/* LIKE overlay — right drag */}
+                  <motion.div
+                    style={{
+                      opacity: likeOpacity,
+                      position: 'absolute', top: 16, left: 16,
+                      border: '3px solid #22c55e',
+                      borderRadius: 8,
+                      padding: '4px 12px',
+                      pointerEvents: 'none',
+                      transform: 'rotate(-15deg)',
+                    }}
+                  >
+                    <span style={{
+                      fontFamily: 'var(--font-display)', fontWeight: 800,
+                      fontSize: 28, letterSpacing: '0.08em',
+                      color: '#22c55e', textTransform: 'uppercase',
+                    }}>LIKE</span>
+                  </motion.div>
+                  {/* NOPE overlay — left drag */}
+                  <motion.div
+                    style={{
+                      opacity: nopeOpacity,
+                      position: 'absolute', top: 16, right: 16,
+                      border: '3px solid #ef4444',
+                      borderRadius: 8,
+                      padding: '4px 12px',
+                      pointerEvents: 'none',
+                      transform: 'rotate(15deg)',
+                    }}
+                  >
+                    <span style={{
+                      fontFamily: 'var(--font-display)', fontWeight: 800,
+                      fontSize: 28, letterSpacing: '0.08em',
+                      color: '#ef4444', textTransform: 'uppercase',
+                    }}>NOPE</span>
+                  </motion.div>
                   {/* Condition badge top-left */}
-                  <div style={{ position: 'absolute', top: 12, left: 12 }}>
+                  <div style={{ position: 'absolute', bottom: 12, left: 12 }}>
                     <span style={{
                       background: 'var(--brass)', color: 'var(--ink)',
                       fontFamily: 'var(--font-display)', fontWeight: 700,
@@ -396,7 +469,7 @@ export function Swipe() {
                     </span>
                   </div>
                   {/* Eyeing this badge top-right */}
-                  <div style={{ position: 'absolute', top: 12, right: 12 }}>
+                  <div style={{ position: 'absolute', bottom: 12, right: 12 }}>
                     <span style={{
                       background: 'var(--terracotta)', color: 'white',
                       fontFamily: 'var(--font-display)', fontWeight: 700,
@@ -423,7 +496,7 @@ export function Swipe() {
                     </p>
                   )}
                 </div>
-              </div>
+              </motion.div>
             ) : (
               <div style={{
                 position: 'absolute', inset: 0,
