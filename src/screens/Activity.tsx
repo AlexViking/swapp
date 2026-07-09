@@ -6,15 +6,19 @@ import { DesktopNav } from '../components/DesktopNav'
 import { Button } from '../components/Button'
 import { supabase } from '../lib/supabase'
 import { useAuthStore } from '../store/auth'
+import { recordSwipe } from '../lib/api'
 
 type ActivityItem = {
-  id: string
+  id: string        // swap id
   icon: React.ReactNode
   iconBg: string
   title: string
   sub: string
   action?: string
   actionPath?: string
+  // For "Like back" — we need to know which item to swipe on
+  likeBackItemId?: string
+  likeBackOwnerId?: string
   group: 'TODAY' | 'YESTERDAY' | 'EARLIER'
 }
 
@@ -45,6 +49,31 @@ export function Activity() {
   const userId = session?.user?.id
   const [items, setItems] = useState<ActivityItem[]>([])
   const [loading, setLoading] = useState(true)
+  const [likingBack, setLikingBack] = useState<string | null>(null) // swap id being liked back
+
+  async function handleAction(item: ActivityItem) {
+    if (item.action === 'Like back' && item.likeBackItemId && item.likeBackOwnerId && userId) {
+      setLikingBack(item.id)
+      try {
+        const { data } = await recordSwipe({
+          swiperId: userId,
+          targetItemId: item.likeBackItemId,
+          targetOwnerId: item.likeBackOwnerId,
+          isLike: true,
+        })
+        if (data && (data as { matched?: boolean }).matched) {
+          navigate(`/match/${(data as { swap_id: string }).swap_id}`)
+        } else {
+          // Already a match (swap confirmed) — go to chat
+          navigate(`/chat/${item.id}`)
+        }
+      } finally {
+        setLikingBack(null)
+      }
+    } else if (item.actionPath) {
+      navigate(item.actionPath)
+    }
+  }
 
   useEffect(() => {
     if (!userId) return
@@ -57,7 +86,7 @@ export function Activity() {
     try {
       const { data: swapData } = await supabase
         .from('swaps')
-        .select('*, item_a:item_a_id(title), item_b:item_b_id(title)')
+        .select('*, item_a:item_a_id(id, title), item_b:item_b_id(id, title)')
         .or(`user_a_id.eq.${userId},user_b_id.eq.${userId}`)
         .order('created_at', { ascending: false })
         .limit(30)
@@ -84,17 +113,22 @@ export function Activity() {
         let title = ''
         let action: string | undefined
         let actionPath: string | undefined
+        let likeBackItemId: string | undefined
+        let likeBackOwnerId: string | undefined
 
         switch (s.status) {
           case 'proposed':
             if (isUserA) {
               title = `You proposed a swap with ${theirName}`
               action = 'Chat'
+              actionPath = `/chat/${s.id}`
             } else {
+              // They proposed — their item is item_a, they are user_a
               title = `${theirName} liked your ${myItem ?? 'item'}`
               action = 'Like back'
+              likeBackItemId = s.item_a?.id
+              likeBackOwnerId = s.user_a_id
             }
-            actionPath = `/chat/${s.id}`
             break
           case 'confirmed':
             title = `New match with ${theirName}`
@@ -124,6 +158,8 @@ export function Activity() {
           sub: relativeTime(iso),
           action,
           actionPath,
+          likeBackItemId,
+          likeBackOwnerId,
           group: groupKey(iso),
         }
       })
@@ -192,9 +228,15 @@ export function Activity() {
                     <div style={{ fontFamily: 'var(--font-body)', fontSize: '16px', color: 'var(--ink)', marginBottom: '2px' }}>{item.title}</div>
                     <div style={{ fontSize: '13px', color: 'var(--text-muted)' }}>{item.sub}</div>
                   </div>
-                  {item.action && item.actionPath && (
-                    <Button size="sm" variant="ghost" style={{ flexShrink: 0 }} onClick={() => navigate(item.actionPath!)}>
-                      {item.action}
+                  {item.action && (
+                    <Button
+                      size="sm"
+                      variant={item.action === 'Like back' ? 'primary' : 'ghost'}
+                      style={{ flexShrink: 0 }}
+                      onClick={() => handleAction(item)}
+                      disabled={likingBack === item.id}
+                    >
+                      {likingBack === item.id ? '…' : item.action}
                     </Button>
                   )}
                 </div>
