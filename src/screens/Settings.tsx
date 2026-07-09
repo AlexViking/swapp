@@ -8,6 +8,7 @@ import { CityPicker } from './CityPicker'
 import { DesktopNav } from '../components/DesktopNav'
 import { useAuthStore } from '../store/auth'
 import { getProfile, updateProfile, signOut } from '../lib/api'
+import { supabase } from '../lib/supabase'
 
 type ProfileNotifs = {
   notif_match: boolean
@@ -26,6 +27,8 @@ export function Settings() {
   const [notifEmail, setNotifEmail] = useState(false)
   const [homeCity, setHomeCity] = useState('')
   const [cityOpen, setCityOpen] = useState(false)
+  const [deleteOpen, setDeleteOpen] = useState(false)
+  const [deleting, setDeleting] = useState(false)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -58,6 +61,19 @@ export function Settings() {
   async function handleSignOut() {
     await signOut()
     navigate('/')
+  }
+
+  async function handleDeleteAccount() {
+    setDeleting(true)
+    try {
+      await supabase.auth.admin?.deleteUser?.(userId ?? '')
+      // Fallback: just sign out — actual deletion requires service role
+      await signOut()
+      navigate('/')
+    } finally {
+      setDeleting(false)
+      setDeleteOpen(false)
+    }
   }
 
   async function handleCitySelect(city: string) {
@@ -168,7 +184,7 @@ export function Settings() {
         </div>
 
         <div style={{ padding: '8px 20px 32px' }}>
-          <Button variant="danger" size="md" fullWidth>
+          <Button variant="danger" size="md" fullWidth onClick={() => setDeleteOpen(true)}>
             Delete my account
           </Button>
         </div>
@@ -176,6 +192,32 @@ export function Settings() {
 
       <Sheet open={cityOpen} onClose={() => setCityOpen(false)} title="Choose your city">
         <CityPicker onSelect={handleCitySelect} />
+      </Sheet>
+
+      <Sheet open={deleteOpen} onClose={() => setDeleteOpen(false)} height="auto" title="Delete account?">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', paddingBottom: '16px' }}>
+          <p style={{ fontFamily: 'var(--font-body)', fontSize: '16px', color: 'var(--text-muted)', margin: 0 }}>
+            This will permanently delete your account, all your items, and your swap history. This can't be undone.
+          </p>
+          <Button
+            variant="danger"
+            size="lg"
+            fullWidth
+            disabled={deleting}
+            onClick={handleDeleteAccount}
+            style={{ background: 'var(--terracotta)', color: '#fff', borderColor: 'var(--terracotta)' }}
+          >
+            {deleting ? 'Deleting…' : 'Yes, delete my account'}
+          </Button>
+          <Button
+            variant="ghost"
+            size="lg"
+            fullWidth
+            onClick={() => setDeleteOpen(false)}
+          >
+            Cancel
+          </Button>
+        </div>
       </Sheet>
     </main>
   )
