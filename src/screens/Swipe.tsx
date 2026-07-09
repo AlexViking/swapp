@@ -94,9 +94,8 @@ function AddThumb({ onClick }: { onClick: () => void }) {
 }
 
 // Isolated card component — owns its own motion values so parent never re-renders during drag
-function SwipeCard({ item, constraintsRef, onLike, onPass }: {
+function SwipeCard({ item, onLike, onPass }: {
   item: Item
-  constraintsRef: React.RefObject<HTMLDivElement | null>
   onLike: () => void
   onPass: () => void
 }) {
@@ -106,17 +105,21 @@ function SwipeCard({ item, constraintsRef, onLike, onPass }: {
   const nopeOpacity = useTransform(x, [-100, -20], [1, 0])
 
   const fly = (dir: 1 | -1, cb: () => void) => {
-    animate(x, dir * 600, { duration: 0.2, ease: 'easeOut' }).then(() => {
-      cb()
-    })
+    animate(x, dir * 800, {
+      type: 'spring',
+      stiffness: 400,
+      damping: 40,
+      velocity: dir * 800,
+    }).then(cb)
   }
 
   return (
     <motion.div
       key={item.id}
       drag="x"
-      dragConstraints={constraintsRef}
-      dragElastic={0.8}
+      dragConstraints={{ left: 0, right: 0 }}
+      dragElastic={1}
+      dragMomentum={false}
       style={{
         x, rotate,
         position: 'absolute', inset: 0,
@@ -130,15 +133,18 @@ function SwipeCard({ item, constraintsRef, onLike, onPass }: {
         cursor: 'grab',
         touchAction: 'none',
         userSelect: 'none',
+        willChange: 'transform',
       }}
       onDragEnd={(_, info) => {
         const { offset, velocity } = info
-        if (offset.x > 100 || velocity.x > 400) {
+        // Fly off on distance OR velocity (fast flick)
+        if (offset.x > 80 || velocity.x > 500) {
           fly(1, onLike)
-        } else if (offset.x < -100 || velocity.x < -400) {
+        } else if (offset.x < -80 || velocity.x < -500) {
           fly(-1, onPass)
         } else {
-          animate(x, 0, { type: 'spring', stiffness: 400, damping: 30 })
+          // Snap back with spring — feels natural
+          animate(x, 0, { type: 'spring', stiffness: 500, damping: 35 })
         }
       }}
     >
@@ -488,7 +494,6 @@ export function Swipe() {
               <SwipeCard
                 key={topCard.id}
                 item={topCard}
-                constraintsRef={constraintsRef}
                 onLike={handleLike}
                 onPass={handlePass}
               />
