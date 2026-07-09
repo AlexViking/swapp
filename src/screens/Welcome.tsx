@@ -1,0 +1,100 @@
+
+import { useNavigate } from 'react-router'
+import { Button } from '../components/Button'
+import logoUrl from '../assets/swapp-logo-lockup.png'
+
+export function Welcome() {
+  const navigate = useNavigate()
+
+  return (
+    <main
+      className="welcome-split"
+      style={{
+        minHeight: '100dvh',
+        background: 'var(--surface-page)',
+        display: 'flex',
+        flexDirection: 'column',
+      }}
+    >
+      {/* Left hero panel — desktop only */}
+      <div
+        className="welcome-hero"
+        style={{
+          display: 'none',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          background: 'var(--swapp-green)',
+          padding: '60px 48px',
+          gap: '32px',
+          textAlign: 'center',
+        }}
+      >
+        <div style={{ background: 'var(--parchment)', borderRadius: 16, padding: '8px 16px' }}>
+          <img src={logoUrl} alt="Swapp" style={{ height: 56 }} />
+        </div>
+        <h1 style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '36px', color: 'var(--parchment)', maxWidth: '360px', lineHeight: 1.2 }}>
+          Find Unique Treasures. Swap Your Own.
+        </h1>
+        <p style={{ fontFamily: 'var(--font-body)', fontSize: '18px', color: 'rgba(247,242,225,0.85)', maxWidth: '320px' }}>
+          Trade the things you love with people nearby. No money, just good taste.
+        </p>
+        {/* Photo tiles */}
+        <div style={{ display: 'flex', gap: '16px', position: 'relative', height: '120px', alignItems: 'center' }}>
+          <div style={{ width: '90px', height: '100px', background: 'var(--terracotta)', borderRadius: 'var(--radius-card)', transform: 'rotate(-6deg)', boxShadow: 'var(--shadow-float)' }} />
+          <div style={{ width: '90px', height: '100px', background: 'var(--denim)', borderRadius: 'var(--radius-card)', transform: 'rotate(2deg)', boxShadow: 'var(--shadow-float)', alignSelf: 'flex-end' }} />
+          <div style={{ width: '90px', height: '100px', background: 'var(--brass)', borderRadius: 'var(--radius-card)', transform: 'rotate(5deg)', boxShadow: 'var(--shadow-float)' }} />
+        </div>
+      </div>
+
+      {/* Right / mobile form panel */}
+      <div
+        className="welcome-form"
+        style={{
+          flex: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: 'var(--space-6)',
+          gap: 'var(--space-5)',
+          textAlign: 'center',
+        }}
+      >
+        {/* Logo shown on mobile only */}
+        <img src={logoUrl} alt="Swapp" style={{ width: 210 }} className="mobile-welcome-logo" />
+
+        <h1
+          style={{
+            font: 'var(--type-h2)',
+            color: 'var(--ink)',
+            maxWidth: '320px',
+          }}
+          className="mobile-welcome-headline"
+        >
+          Find Unique Treasures. Swap Your Own.
+        </h1>
+
+        <p style={{ font: 'var(--type-body)', color: 'var(--text-muted)', maxWidth: '300px' }} className="mobile-welcome-body">
+          Trade the things you love with people nearby. No money, just good taste.
+        </p>
+
+        {/* Photo placeholders — mobile only */}
+        <div className="mobile-welcome-photos" style={{ display: 'flex', gap: '12px', margin: '8px 0', position: 'relative', height: '100px' }}>
+          <div style={{ width: '80px', height: '90px', background: 'var(--terracotta)', borderRadius: 'var(--radius-card)', transform: 'rotate(-6deg)', boxShadow: 'var(--shadow-card)' }} />
+          <div style={{ width: '80px', height: '90px', background: 'var(--denim)', borderRadius: 'var(--radius-card)', transform: 'rotate(2deg)', boxShadow: 'var(--shadow-card)', alignSelf: 'flex-end' }} />
+          <div style={{ width: '80px', height: '90px', background: 'var(--brass)', borderRadius: 'var(--radius-card)', transform: 'rotate(5deg)', boxShadow: 'var(--shadow-card)' }} />
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)', width: '100%', maxWidth: '360px' }}>
+          <Button variant="primary" size="lg" fullWidth onClick={() => navigate('/register')}>
+            Get started
+          </Button>
+          <Button variant="ghost" size="lg" fullWidth onClick={() => navigate('/login')}>
+            I already have an account
+          </Button>
+        </div>
+      </div>
+    </main>
+  )
+}
