@@ -67,9 +67,12 @@ export function Welcome() {
 
         <h1
           style={{
-            font: 'var(--type-h2)',
+            fontFamily: 'var(--font-display)',
+            fontWeight: 700,
+            fontSize: '26px',
+            lineHeight: 1.2,
             color: 'var(--ink)',
-            maxWidth: '320px',
+            maxWidth: '260px',
           }}
           className="mobile-welcome-headline"
         >
