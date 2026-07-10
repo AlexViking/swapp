@@ -76,7 +76,7 @@ export function Welcome() {
           }}
           className="mobile-welcome-headline"
         >
-          Find Unique Treasures. Swap Your Own.
+          Find Unique Treasures.<br />Swap Your Own.
         </h1>
 
         <p style={{ font: 'var(--type-body)', color: 'var(--text-muted)', maxWidth: '300px' }} className="mobile-welcome-body">
