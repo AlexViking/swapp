@@ -1,5 +1,6 @@
 
 import { useNavigate } from 'react-router'
+import { Camera, Star, Heart } from 'lucide-react'
 import { Button } from '../components/Button'
 import logoUrl from '../assets/swapp-logo-lockup.png'
 
@@ -37,13 +38,13 @@ export function Welcome() {
           Find Unique Treasures. Swap Your Own.
         </h1>
         <p style={{ fontFamily: 'var(--font-body)', fontSize: '18px', color: 'rgba(247,242,225,0.85)', maxWidth: '320px' }}>
-          Trade the things you love with people nearby. No money, just good taste.
+          Trade the things you've outgrown for things you'll love. No fees, no landfill.
         </p>
         {/* Photo tiles */}
         <div style={{ display: 'flex', gap: '16px', position: 'relative', height: '120px', alignItems: 'center' }}>
-          <div style={{ width: '90px', height: '100px', background: 'var(--terracotta)', borderRadius: 'var(--radius-card)', transform: 'rotate(-6deg)', boxShadow: 'var(--shadow-float)' }} />
-          <div style={{ width: '90px', height: '100px', background: 'var(--denim)', borderRadius: 'var(--radius-card)', transform: 'rotate(2deg)', boxShadow: 'var(--shadow-float)', alignSelf: 'flex-end' }} />
-          <div style={{ width: '90px', height: '100px', background: 'var(--brass)', borderRadius: 'var(--radius-card)', transform: 'rotate(5deg)', boxShadow: 'var(--shadow-float)' }} />
+          <div style={{ width: '90px', height: '100px', background: 'var(--terracotta)', borderRadius: 'var(--radius-card)', transform: 'rotate(-6deg)', boxShadow: 'var(--shadow-float)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Camera size={28} color="rgba(255,255,255,0.7)" /></div>
+          <div style={{ width: '90px', height: '100px', background: 'var(--denim)', borderRadius: 'var(--radius-card)', transform: 'rotate(2deg)', boxShadow: 'var(--shadow-float)', alignSelf: 'flex-end', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Star size={28} color="rgba(255,255,255,0.7)" /></div>
+          <div style={{ width: '90px', height: '100px', background: 'var(--brass)', borderRadius: 'var(--radius-card)', transform: 'rotate(5deg)', boxShadow: 'var(--shadow-float)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Heart size={28} color="rgba(255,255,255,0.7)" /></div>
         </div>
       </div>
 
@@ -76,14 +77,14 @@ export function Welcome() {
         </h1>
 
         <p style={{ font: 'var(--type-body)', color: 'var(--text-muted)', maxWidth: '300px' }} className="mobile-welcome-body">
-          Trade the things you love with people nearby. No money, just good taste.
+          Trade the things you've outgrown for things you'll love. No fees, no landfill.
         </p>
 
         {/* Photo placeholders — mobile only */}
         <div className="mobile-welcome-photos" style={{ display: 'flex', gap: '12px', margin: '8px 0', position: 'relative', height: '100px' }}>
-          <div style={{ width: '80px', height: '90px', background: 'var(--terracotta)', borderRadius: 'var(--radius-card)', transform: 'rotate(-6deg)', boxShadow: 'var(--shadow-card)' }} />
-          <div style={{ width: '80px', height: '90px', background: 'var(--denim)', borderRadius: 'var(--radius-card)', transform: 'rotate(2deg)', boxShadow: 'var(--shadow-card)', alignSelf: 'flex-end' }} />
-          <div style={{ width: '80px', height: '90px', background: 'var(--brass)', borderRadius: 'var(--radius-card)', transform: 'rotate(5deg)', boxShadow: 'var(--shadow-card)' }} />
+          <div style={{ width: '80px', height: '90px', background: 'var(--terracotta)', borderRadius: 'var(--radius-card)', transform: 'rotate(-6deg)', boxShadow: 'var(--shadow-card)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Camera size={24} color="rgba(255,255,255,0.7)" /></div>
+          <div style={{ width: '80px', height: '90px', background: 'var(--denim)', borderRadius: 'var(--radius-card)', transform: 'rotate(2deg)', boxShadow: 'var(--shadow-card)', alignSelf: 'flex-end', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Star size={24} color="rgba(255,255,255,0.7)" /></div>
+          <div style={{ width: '80px', height: '90px', background: 'var(--brass)', borderRadius: 'var(--radius-card)', transform: 'rotate(5deg)', boxShadow: 'var(--shadow-card)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Heart size={24} color="rgba(255,255,255,0.7)" /></div>
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)', width: '100%', maxWidth: '360px' }}>
