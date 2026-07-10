@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router'
 import { ArrowLeft, MoreVertical, Send } from 'lucide-react'
 import { Avatar } from '../components/Avatar'
 import { Card } from '../components/Card'
+import { Sheet } from '../components/Sheet'
 import { DesktopNav } from '../components/DesktopNav'
 import { supabase } from '../lib/supabase'
 import { useAuthStore } from '../store/auth'
@@ -18,6 +19,8 @@ type SwapContext = {
   status: string
   itemATitle: string
   itemBTitle: string
+  itemAImages: string[]
+  itemBImages: string[]
   otherName: string
 }
 
@@ -58,8 +61,11 @@ export function Chat() {
     status: 'proposed',
     itemATitle: 'Your item',
     itemBTitle: 'Their item',
+    itemAImages: [],
+    itemBImages: [],
     otherName: 'Swapper',
   })
+  const [detailsOpen, setDetailsOpen] = useState(false)
   const bottomRef = useRef<HTMLDivElement>(null)
   const channelRef = useRef<ReturnType<typeof supabase.channel> | null>(null)
 
@@ -121,6 +127,8 @@ export function Chat() {
         status: swap.status ?? 'proposed',
         itemATitle: swap.item_a?.title ?? 'Item A',
         itemBTitle: swap.item_b?.title ?? 'Item B',
+        itemAImages: swap.item_a?.images ?? [],
+        itemBImages: swap.item_b?.images ?? [],
         otherName: otherProfile?.name ?? 'Swapper',
       })
     }
@@ -204,6 +212,7 @@ export function Chat() {
               <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>swap in progress</div>
             </div>
             <button
+              onClick={() => setDetailsOpen(true)}
               style={{
                 padding: '6px 14px',
                 background: 'var(--parchment-deep)',
@@ -351,6 +360,33 @@ export function Chat() {
           <Send size={18} color={input.trim() ? 'var(--parchment)' : 'var(--ink-soft)'} />
         </button>
       </div>
+      <Sheet open={detailsOpen} onClose={() => setDetailsOpen(false)} title="Swap details" height="auto">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', paddingBottom: '8px' }}>
+          {/* Item A */}
+          {[
+            { title: ctx.itemATitle, images: ctx.itemAImages, label: 'Your item' },
+            { title: ctx.itemBTitle, images: ctx.itemBImages, label: `${ctx.otherName}'s item` },
+          ].map((item) => (
+            <div key={item.label} style={{ display: 'flex', gap: '14px', alignItems: 'center' }}>
+              <div style={{ width: '72px', height: '72px', borderRadius: 'var(--radius-card)', overflow: 'hidden', flexShrink: 0, background: 'var(--parchment-deep)' }}>
+                {item.images[0]
+                  ? <img src={item.images[0]} alt={item.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  : <div style={{ width: '100%', height: '100%' }} />
+                }
+              </div>
+              <div>
+                <div style={{ fontSize: '12px', fontFamily: 'var(--font-display)', fontWeight: 600, color: 'var(--text-muted)', marginBottom: '2px' }}>{item.label}</div>
+                <div style={{ fontSize: '16px', fontFamily: 'var(--font-display)', fontWeight: 700, color: 'var(--ink)' }}>{item.title}</div>
+              </div>
+            </div>
+          ))}
+          <div style={{ height: '1px', background: 'var(--border-subtle)' }} />
+          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px', fontFamily: 'var(--font-body)', color: 'var(--text-muted)' }}>
+            <span>Status</span>
+            <span style={{ fontFamily: 'var(--font-display)', fontWeight: 700, color: 'var(--ink)', textTransform: 'capitalize' }}>{ctx.status}</span>
+          </div>
+        </div>
+      </Sheet>
     </div>
   )
 }
