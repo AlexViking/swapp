@@ -61,33 +61,33 @@ export function Welcome() {
           gap: '20px',
         }}
       >
-        {/* Logo shown on mobile only */}
-        <img src={logoUrl} alt="Swapp" style={{ width: 160 }} className="mobile-welcome-logo" />
+        {/* Logo shown on mobile only — no box, just the image */}
+        <img src={logoUrl} alt="Swapp" style={{ width: 140, display: 'block' }} className="mobile-welcome-logo" />
 
         <h1
           style={{
             fontFamily: 'var(--font-display)',
             fontWeight: 700,
-            fontSize: '32px',
-            lineHeight: 1.15,
+            fontSize: '28px',
+            lineHeight: 1.2,
             color: 'var(--ink)',
-            maxWidth: '320px',
             textAlign: 'left',
+            margin: 0,
           }}
           className="mobile-welcome-headline"
         >
           Find Unique Treasures.<br />Swap Your Own.
         </h1>
 
-        <p style={{ font: 'var(--type-body)', color: 'var(--text-muted)', maxWidth: '320px', textAlign: 'left' }} className="mobile-welcome-body">
+        <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: 'var(--text-muted)', textAlign: 'left', margin: 0 }} className="mobile-welcome-body">
           Trade the things you've outgrown for things you'll love. No fees, no landfill.
         </p>
 
-        {/* Photo placeholders — mobile only */}
-        <div className="mobile-welcome-photos" style={{ display: 'flex', gap: '14px', margin: '8px 0', alignItems: 'center', alignSelf: 'flex-start' }}>
-          <div style={{ width: '96px', height: '108px', background: 'var(--terracotta)', borderRadius: 'var(--radius-card)', transform: 'rotate(-6deg)', boxShadow: 'var(--shadow-card)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Camera size={26} color="rgba(255,255,255,0.7)" /></div>
-          <div style={{ width: '96px', height: '108px', background: 'var(--denim)', borderRadius: 'var(--radius-card)', transform: 'rotate(2deg)', boxShadow: 'var(--shadow-card)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '16px' }}><Star size={26} color="rgba(255,255,255,0.7)" /></div>
-          <div style={{ width: '96px', height: '108px', background: 'var(--brass)', borderRadius: 'var(--radius-card)', transform: 'rotate(5deg)', boxShadow: 'var(--shadow-card)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Heart size={26} color="rgba(255,255,255,0.7)" /></div>
+        {/* Photo cards — mobile only */}
+        <div className="mobile-welcome-photos" style={{ display: 'flex', gap: '10px', alignItems: 'flex-start', margin: '4px 0' }}>
+          <div style={{ width: '88px', height: '88px', background: 'var(--terracotta)', borderRadius: '16px', transform: 'rotate(-6deg)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Camera size={24} color="rgba(255,255,255,0.75)" /></div>
+          <div style={{ width: '88px', height: '88px', background: 'var(--denim)', borderRadius: '16px', transform: 'rotate(2deg)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '12px' }}><Star size={24} color="rgba(255,255,255,0.75)" /></div>
+          <div style={{ width: '88px', height: '88px', background: 'var(--brass)', borderRadius: '16px', transform: 'rotate(6deg)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Heart size={24} color="rgba(255,255,255,0.75)" /></div>
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)', width: '100%' }}>
