@@ -55,42 +55,42 @@ export function Welcome() {
           flex: 1,
           display: 'flex',
           flexDirection: 'column',
-          alignItems: 'center',
+          alignItems: 'flex-start',
           justifyContent: 'center',
-          padding: 'var(--space-6)',
-          gap: 'var(--space-5)',
-          textAlign: 'center',
+          padding: '40px 32px',
+          gap: '20px',
         }}
       >
         {/* Logo shown on mobile only */}
-        <img src={logoUrl} alt="Swapp" style={{ width: 210 }} className="mobile-welcome-logo" />
+        <img src={logoUrl} alt="Swapp" style={{ width: 160 }} className="mobile-welcome-logo" />
 
         <h1
           style={{
             fontFamily: 'var(--font-display)',
             fontWeight: 700,
-            fontSize: '26px',
-            lineHeight: 1.2,
+            fontSize: '32px',
+            lineHeight: 1.15,
             color: 'var(--ink)',
-            maxWidth: '260px',
+            maxWidth: '320px',
+            textAlign: 'left',
           }}
           className="mobile-welcome-headline"
         >
           Find Unique Treasures.<br />Swap Your Own.
         </h1>
 
-        <p style={{ font: 'var(--type-body)', color: 'var(--text-muted)', maxWidth: '300px' }} className="mobile-welcome-body">
+        <p style={{ font: 'var(--type-body)', color: 'var(--text-muted)', maxWidth: '320px', textAlign: 'left' }} className="mobile-welcome-body">
           Trade the things you've outgrown for things you'll love. No fees, no landfill.
         </p>
 
         {/* Photo placeholders — mobile only */}
-        <div className="mobile-welcome-photos" style={{ display: 'flex', gap: '12px', margin: '8px 0', position: 'relative', height: '100px' }}>
-          <div style={{ width: '80px', height: '90px', background: 'var(--terracotta)', borderRadius: 'var(--radius-card)', transform: 'rotate(-6deg)', boxShadow: 'var(--shadow-card)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Camera size={24} color="rgba(255,255,255,0.7)" /></div>
-          <div style={{ width: '80px', height: '90px', background: 'var(--denim)', borderRadius: 'var(--radius-card)', transform: 'rotate(2deg)', boxShadow: 'var(--shadow-card)', alignSelf: 'flex-end', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Star size={24} color="rgba(255,255,255,0.7)" /></div>
-          <div style={{ width: '80px', height: '90px', background: 'var(--brass)', borderRadius: 'var(--radius-card)', transform: 'rotate(5deg)', boxShadow: 'var(--shadow-card)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Heart size={24} color="rgba(255,255,255,0.7)" /></div>
+        <div className="mobile-welcome-photos" style={{ display: 'flex', gap: '14px', margin: '8px 0', alignItems: 'center', alignSelf: 'flex-start' }}>
+          <div style={{ width: '96px', height: '108px', background: 'var(--terracotta)', borderRadius: 'var(--radius-card)', transform: 'rotate(-6deg)', boxShadow: 'var(--shadow-card)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Camera size={26} color="rgba(255,255,255,0.7)" /></div>
+          <div style={{ width: '96px', height: '108px', background: 'var(--denim)', borderRadius: 'var(--radius-card)', transform: 'rotate(2deg)', boxShadow: 'var(--shadow-card)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '16px' }}><Star size={26} color="rgba(255,255,255,0.7)" /></div>
+          <div style={{ width: '96px', height: '108px', background: 'var(--brass)', borderRadius: 'var(--radius-card)', transform: 'rotate(5deg)', boxShadow: 'var(--shadow-card)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Heart size={26} color="rgba(255,255,255,0.7)" /></div>
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)', width: '100%', maxWidth: '360px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)', width: '100%' }}>
           <Button variant="primary" size="lg" fullWidth onClick={() => navigate('/register')}>
             Get started
           </Button>
