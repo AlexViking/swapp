@@ -55,8 +55,8 @@ export function Match() {
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: 'var(--space-6)',
-        gap: 'var(--space-5)',
+        padding: '10px 28px 28px',
+        gap: '20px',
         textAlign: 'center',
       }}
     >
@@ -65,8 +65,8 @@ export function Match() {
         style={{
           fontFamily: 'var(--font-display)',
           fontWeight: 700,
-          fontSize: '13px',
-          letterSpacing: 'var(--tracking-caption)',
+          fontSize: '12px',
+          letterSpacing: '0.18em',
           textTransform: 'uppercase',
           color: 'var(--brass)',
         }}
@@ -74,21 +74,23 @@ export function Match() {
         It's a swapp!
       </div>
 
-      <h1 style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '28px', color: 'var(--parchment)' }}>
+      <h1 style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '34px', lineHeight: 1.15, color: 'var(--parchment)', margin: 0 }}>
         You &amp; {swapData?.otherName ?? 'Swapper'} both said yes
       </h1>
 
       {/* Item photos side by side */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', margin: '8px 0' }}>
+      <div style={{ display: 'flex', alignItems: 'center', margin: '10px 0' }}>
         <div
           style={{
-            width: '120px',
-            height: '120px',
-            borderRadius: 'var(--radius-card)',
-            background: swapData?.itemAImage ? 'transparent' : 'var(--terracotta)',
+            width: '132px',
+            height: '132px',
+            borderRadius: '18px',
+            background: swapData?.itemAImage ? 'transparent' : 'var(--denim)',
             transform: 'rotate(-6deg)',
             boxShadow: 'var(--shadow-float)',
+            border: '3px solid #FBF8EE',
             overflow: 'hidden',
+            flexShrink: 0,
           }}
         >
           {swapData?.itemAImage && (
@@ -97,31 +99,32 @@ export function Match() {
         </div>
         <div
           style={{
-            width: '36px',
-            height: '36px',
+            width: '54px',
+            height: '54px',
             borderRadius: '50%',
             background: 'var(--brass)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            fontFamily: 'var(--font-display)',
-            fontWeight: 700,
-            fontSize: '16px',
-            color: 'var(--ink)',
-            zIndex: 1,
+            zIndex: 2,
+            margin: '0 -14px',
+            boxShadow: 'var(--shadow-float)',
+            flexShrink: 0,
           }}
         >
-          ⇄
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--ink)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 8h13M14 4l4 4-4 4M20 16H7M10 12l-4 4 4 4"/></svg>
         </div>
         <div
           style={{
-            width: '120px',
-            height: '120px',
-            borderRadius: 'var(--radius-card)',
-            background: swapData?.itemBImage ? 'transparent' : 'var(--denim)',
+            width: '132px',
+            height: '132px',
+            borderRadius: '18px',
+            background: swapData?.itemBImage ? 'transparent' : 'var(--terracotta)',
             transform: 'rotate(6deg)',
             boxShadow: 'var(--shadow-float)',
+            border: '3px solid #FBF8EE',
             overflow: 'hidden',
+            flexShrink: 0,
           }}
         >
           {swapData?.itemBImage && (
@@ -130,17 +133,11 @@ export function Match() {
         </div>
       </div>
 
-      {swapData && (
-        <div style={{ color: 'var(--parchment)', opacity: 0.9, fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '15px' }}>
-          {swapData.itemATitle} ⇄ {swapData.itemBTitle}
-        </div>
-      )}
-
-      <p style={{ font: 'var(--type-body)', color: 'var(--text-on-green)', opacity: 0.8, maxWidth: '300px' }}>
+      <p style={{ fontFamily: 'var(--font-body)', fontSize: '16px', lineHeight: 1.55, color: 'rgba(247,242,225,0.85)', maxWidth: '300px', margin: 0 }}>
         Say hi and sort out where to meet. Keep it friendly — that's the Swapp way.
       </p>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)', width: '100%', maxWidth: '360px' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', width: '100%', marginTop: '10px' }}>
         <Button
           variant="accent"
           size="lg"

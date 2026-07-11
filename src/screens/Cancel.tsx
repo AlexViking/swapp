@@ -60,15 +60,17 @@ export function Cancel() {
             placeholder="Add a note…"
             rows={3}
             style={{
-              padding: '12px 16px',
-              background: 'var(--cream)',
+              padding: '10px 14px',
+              background: '#fff',
               border: '1.5px solid var(--border-subtle)',
-              borderRadius: 'var(--radius-card)',
+              borderRadius: 'var(--radius-card-sm)',
               fontFamily: 'var(--font-body)',
-              fontSize: '16px',
-              resize: 'vertical',
+              fontSize: '15px',
+              resize: 'none',
               outline: 'none',
               color: 'var(--ink)',
+              width: '100%',
+              height: '56px',
             }}
           />
         </div>
@@ -82,6 +84,7 @@ export function Cancel() {
             fullWidth
             disabled={!reason || submitting}
             onClick={handleCancel}
+            style={{ background: 'var(--terracotta)', color: '#fff', border: 'none' }}
           >
             {submitting ? 'Cancelling…' : 'Cancel the swap'}
           </Button>

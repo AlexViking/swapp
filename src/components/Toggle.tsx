@@ -28,12 +28,14 @@ export function Toggle({ checked, onChange, label, description }: ToggleProps) {
       <div
         style={{
           position: 'relative',
-          width: '48px',
-          height: '28px',
+          width: '52px',
+          height: '30px',
           borderRadius: 'var(--radius-pill)',
-          background: checked ? 'var(--swapp-green)' : 'var(--ink-faint)',
+          background: checked ? 'var(--swapp-green)' : 'var(--parchment-deep)',
           transition: 'background var(--dur-fast) var(--ease-out)',
           flexShrink: 0,
+          border: 'none',
+          cursor: 'pointer',
         }}
         onClick={() => onChange(!checked)}
       >
@@ -41,12 +43,12 @@ export function Toggle({ checked, onChange, label, description }: ToggleProps) {
           style={{
             position: 'absolute',
             top: '3px',
-            left: checked ? '23px' : '3px',
-            width: '22px',
-            height: '22px',
+            left: checked ? '25px' : '3px',
+            width: '24px',
+            height: '24px',
             borderRadius: '50%',
             background: '#fff',
-            boxShadow: '0 1px 3px rgba(0,0,0,0.2)',
+            boxShadow: '0 1px 2px rgba(51,50,43,0.05), 0 6px 18px rgba(51,50,43,0.06)',
             transition: 'left var(--dur-fast) var(--ease-out)',
           }}
         />

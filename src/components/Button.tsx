@@ -27,12 +27,12 @@ const variantStyles: Record<Variant, React.CSSProperties> = {
   danger: {
     background: 'transparent',
     color: 'var(--terracotta)',
-    border: '1.5px solid var(--terracotta)',
+    border: '1.5px solid rgba(201,124,94,0.4)',
   },
 }
 
 const sizeStyles: Record<Size, React.CSSProperties> = {
-  sm: { padding: '8px 16px', fontSize: '14px', minHeight: '36px' },
+  sm: { padding: '7px 16px', fontSize: '14px', minHeight: '36px' },
   md: { padding: '12px 24px', fontSize: '16px', minHeight: '44px' },
   lg: { padding: '16px 32px', fontSize: '17px', minHeight: '52px' },
 }

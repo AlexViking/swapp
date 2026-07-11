@@ -135,26 +135,26 @@ export function Matches() {
 
       <div className="matches-chat-split" style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
         {/* Swaps list column */}
-        <div className="matches-list-col" style={{ display: 'flex', flexDirection: 'column', flex: 1, overflowY: 'auto', paddingBottom: 80 }}>
+        <div className="matches-list-col" style={{ display: 'flex', flexDirection: 'column', flex: 1, overflowY: 'auto' }}>
           <header
             className="mobile-header"
-            style={{ padding: '24px 20px 12px', background: 'var(--surface-card)', borderBottom: '1px solid var(--border-subtle)', flexShrink: 0 }}
+            style={{ padding: '6px 20px 14px', flexShrink: 0 }}
           >
-            <h1 style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 28, marginBottom: 16 }}>Your swaps</h1>
+            <h1 style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 26, lineHeight: 1.15, color: 'var(--ink)', margin: '0 0 14px' }}>Your swaps</h1>
             <div style={{ display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 4 }}>
               {filters.map((f) => (
                 <button
                   key={f.id}
                   onClick={() => setFilter(f.id)}
                   style={{
-                    padding: '6px 16px',
+                    padding: '7px 16px',
                     borderRadius: 'var(--radius-pill)',
-                    background: filter === f.id ? 'var(--swapp-green)' : 'var(--parchment-deep)',
+                    background: filter === f.id ? 'var(--swapp-green)' : '#fff',
                     color: filter === f.id ? 'var(--parchment)' : 'var(--ink)',
-                    border: '1.5px solid transparent',
+                    border: filter === f.id ? '1.5px solid var(--swapp-green)' : '1.5px solid var(--border-subtle)',
                     cursor: 'pointer',
-                    fontFamily: 'var(--font-display)',
-                    fontWeight: 700,
+                    fontFamily: 'var(--font-body)',
+                    fontWeight: 500,
                     fontSize: 14,
                     whiteSpace: 'nowrap',
                   }}
@@ -167,24 +167,24 @@ export function Matches() {
 
           {/* Desktop title — shown in list col on desktop */}
           <div
-            className="desktop-nav"
-            style={{ display: 'none', padding: '24px 20px 12px', background: 'var(--surface-card)', borderBottom: '1px solid var(--border-subtle)', flexShrink: 0, flexDirection: 'column' }}
+            className="matches-desktop-title"
+            style={{ display: 'none', padding: '18px 18px 14px', flexShrink: 0, flexDirection: 'column' }}
           >
-            <h1 style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 24, marginBottom: 16 }}>Your swaps</h1>
+            <h1 style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 24, marginBottom: 14, color: 'var(--ink)' }}>Your swaps</h1>
             <div style={{ display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 4 }}>
               {filters.map((f) => (
                 <button
                   key={f.id}
                   onClick={() => setFilter(f.id)}
                   style={{
-                    padding: '6px 16px',
+                    padding: '7px 16px',
                     borderRadius: 'var(--radius-pill)',
-                    background: filter === f.id ? 'var(--swapp-green)' : 'var(--parchment-deep)',
+                    background: filter === f.id ? 'var(--swapp-green)' : '#fff',
                     color: filter === f.id ? 'var(--parchment)' : 'var(--ink)',
-                    border: '1.5px solid transparent',
+                    border: filter === f.id ? '1.5px solid var(--swapp-green)' : '1.5px solid var(--border-subtle)',
                     cursor: 'pointer',
-                    fontFamily: 'var(--font-display)',
-                    fontWeight: 700,
+                    fontFamily: 'var(--font-body)',
+                    fontWeight: 500,
                     fontSize: 14,
                     whiteSpace: 'nowrap',
                   }}
@@ -195,59 +195,61 @@ export function Matches() {
             </div>
           </div>
 
-          <div style={{ flex: 1 }}>
+          <div style={{ flex: 1, padding: '0 0 16px' }}>
             {loading ? (
               <div style={{ padding: '48px 20px', textAlign: 'center', color: 'var(--text-muted)', fontFamily: 'var(--font-display)', fontWeight: 600 }}>
                 Loading…
               </div>
             ) : filtered.length > 0 ? (
               <>
-                {filtered.map((swap, idx) => (
-                  <button
-                    key={swap.id}
-                    onClick={() => handleRowClick(swap)}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 12,
-                      width: '100%',
-                      padding: '16px 20px',
-                      background: selectedSwapId === swap.id ? 'rgba(47,106,82,0.06)' : 'none',
-                      border: 'none',
-                      borderBottom: '1px solid var(--border-subtle)',
-                      cursor: 'pointer',
-                      textAlign: 'left',
-                    }}
-                  >
-                    <Avatar
-                      initials={swap.otherInitial}
-                      color={AVATAR_COLORS[idx % AVATAR_COLORS.length]}
-                      size={48}
-                    />
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 16, marginBottom: 2, color: 'var(--ink)' }}>
-                        {swap.otherName}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+                  {filtered.map((swap, idx) => (
+                    <button
+                      key={swap.id}
+                      onClick={() => handleRowClick(swap)}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 12,
+                        width: '100%',
+                        padding: '14px 20px',
+                        background: selectedSwapId === swap.id ? 'rgba(47,106,82,0.06)' : 'none',
+                        border: 'none',
+                        borderBottom: '1px solid var(--border-subtle)',
+                        cursor: 'pointer',
+                        textAlign: 'left',
+                      }}
+                    >
+                      <Avatar
+                        initials={swap.otherInitial}
+                        color={AVATAR_COLORS[idx % AVATAR_COLORS.length]}
+                        size={46}
+                      />
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 15.5, marginBottom: 2, color: 'var(--ink)' }}>
+                          {swap.otherName}
+                        </div>
+                        <div style={{
+                          fontSize: 14,
+                          fontFamily: 'var(--font-body)',
+                          color: 'var(--text-muted)',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          whiteSpace: 'nowrap',
+                          marginTop: 2,
+                        }}>
+                          {swap.itemA} ⇄ {swap.itemB}
+                        </div>
                       </div>
-                      <div style={{
-                        fontSize: 14,
-                        fontFamily: 'var(--font-display)',
-                        fontWeight: 600,
-                        color: 'var(--ink-soft)',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        whiteSpace: 'nowrap',
-                      }}>
-                        {swap.itemA} ⇄ {swap.itemB}
+                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 5, flexShrink: 0 }}>
+                        <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>{relativeTime(swap.createdAt)}</span>
+                        <Badge bg={badgeColor[swap.status] ?? 'var(--denim)'} color="#fff">
+                          {badgeLabel[swap.status] ?? swap.status}
+                        </Badge>
                       </div>
-                    </div>
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 6, flexShrink: 0 }}>
-                      <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>{relativeTime(swap.createdAt)}</span>
-                      <Badge bg={badgeColor[swap.status] ?? 'var(--denim)'} color="#fff">
-                        {badgeLabel[swap.status] ?? swap.status}
-                      </Badge>
-                    </div>
-                  </button>
-                ))}
+                    </button>
+                  ))}
+                </div>
                 <div style={{ padding: '20px', textAlign: 'center', fontSize: 13, color: 'var(--text-muted)', fontFamily: 'var(--font-display)', fontWeight: 600 }}>
                   That's all your swaps…
                 </div>
@@ -296,7 +298,7 @@ export function Matches() {
             gap: 12,
           }}
         >
-          <span style={{ fontSize: 32 }}>💬</span>
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--border-subtle)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12a8 8 0 0 1-8 8H4l1.5-3A8 8 0 1 1 21 12z"/></svg>
           <span>Select a swap to chat</span>
         </div>
       </div>

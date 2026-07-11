@@ -1,11 +1,14 @@
-
 import { useNavigate, useLocation } from 'react-router'
+import { MapPin, ChevronDown } from 'lucide-react'
 import { Avatar } from './Avatar'
-import { Button } from './Button'
+import { useAuthStore } from '../store/auth'
+import logoUrl from '../assets/swapp-logo-lockup.png'
 
 export function DesktopNav() {
   const navigate = useNavigate()
   const location = useLocation()
+  const session = useAuthStore((s) => s.session)
+  const initial = (session?.user?.email?.[0] ?? 'M').toUpperCase()
 
   const navLink = (path: string, label: string) => {
     const isActive = location.pathname === path
@@ -16,13 +19,14 @@ export function DesktopNav() {
         style={{
           background: 'none',
           border: 'none',
+          borderBottom: isActive ? '2.5px solid var(--swapp-green)' : '2.5px solid transparent',
           cursor: 'pointer',
           fontFamily: 'var(--font-display)',
           fontWeight: 600,
           fontSize: '16px',
           color: isActive ? 'var(--swapp-green)' : 'var(--ink)',
-          padding: '4px 8px',
-          borderBottom: isActive ? '2px solid var(--swapp-green)' : '2px solid transparent',
+          paddingBottom: '3px',
+          textDecoration: 'none',
         }}
       >
         {label}
@@ -36,9 +40,8 @@ export function DesktopNav() {
         display: 'none',
         alignItems: 'center',
         justifyContent: 'space-between',
-        padding: '0 40px',
-        height: '64px',
-        background: 'var(--surface-card)',
+        padding: '8px 28px',
+        background: 'var(--cream)',
         borderBottom: '1px solid var(--border-subtle)',
         position: 'fixed',
         top: 0,
@@ -48,20 +51,69 @@ export function DesktopNav() {
       }}
       className="desktop-nav"
     >
-      <img
-        src="/src/assets/swapp-logo-lockup.png"
-        alt="Swapp"
-        style={{ height: '32px', cursor: 'pointer' }}
-        onClick={() => navigate('/hunt')}
-      />
-      <nav style={{ display: 'flex', gap: '24px', alignItems: 'center' }}>
-        {navLink('/hunt', 'Hunt')}
-        {navLink('/matches', 'Matches')}
-        {navLink('/activity', 'Activity')}
-      </nav>
-      <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-        <Button size="sm" onClick={() => navigate('/add')}>+ Add</Button>
-        <Avatar initials="M" color="var(--denim)" size={36} style={{ cursor: 'pointer' }} />
+      <div style={{ display: 'flex', alignItems: 'center', gap: '30px' }}>
+        <img
+          src={logoUrl}
+          alt="Swapp"
+          style={{ height: '52px', cursor: 'pointer' }}
+          onClick={() => navigate('/hunt')}
+        />
+        <nav style={{ display: 'flex', gap: '30px', alignItems: 'center' }}>
+          {navLink('/hunt', 'Hunt')}
+          {navLink('/matches', 'Matches')}
+          {navLink('/activity', 'Activity')}
+        </nav>
+      </div>
+
+      <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+        {/* Location chip */}
+        <button
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            border: '1.5px solid var(--border-subtle)',
+            background: 'var(--surface-card)',
+            borderRadius: 'var(--radius-pill)',
+            padding: '7px 14px',
+            fontFamily: 'var(--font-body)',
+            fontSize: '14px',
+            color: 'var(--ink)',
+            cursor: 'pointer',
+          }}
+        >
+          <MapPin size={15} color="var(--swapp-green)" />
+          Berlin · 5 km
+          <ChevronDown size={13} color="var(--ink-soft)" />
+        </button>
+
+        {/* Add button */}
+        <button
+          onClick={() => navigate('/add')}
+          style={{
+            fontFamily: 'var(--font-display)',
+            fontWeight: 600,
+            fontSize: '15px',
+            padding: '10px 22px',
+            minHeight: '44px',
+            borderRadius: 'var(--radius-pill)',
+            border: 'none',
+            background: 'var(--swapp-green)',
+            color: 'var(--parchment)',
+            cursor: 'pointer',
+          }}
+        >
+          + Add a treasure
+        </button>
+
+        {/* Avatar */}
+        <Avatar
+          initials={initial}
+          color="var(--denim)"
+          size={40}
+          style={{ cursor: 'pointer' }}
+          onClick={() => navigate('/profile')}
+        />
       </div>
     </header>
   )

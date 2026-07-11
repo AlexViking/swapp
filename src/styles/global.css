@@ -15,6 +15,10 @@ html, body {
   font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* Extend background into notch/home-indicator areas */
+  padding-top: env(safe-area-inset-top);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
 }
 
 #root {
@@ -42,4 +46,21 @@ input, textarea, select {
 img {
   max-width: 100%;
   display: block;
+}
+
+/* Settings rows: remove border from last child in card containers */
+.settings-card > *:last-child,
+.settings-card > button:last-child,
+.settings-card > label:last-child,
+.settings-card > div:last-child {
+  border-bottom: none !important;
+}
+
+/* Input focus ring */
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--swapp-green) !important;
+  box-shadow: 0 0 0 3px var(--focus-ring) !important;
+  outline: none;
 }

@@ -100,20 +100,29 @@ export function Profile() {
     <div style={{ minHeight: '100dvh', background: 'var(--surface-page)', display: 'flex', flexDirection: 'column', paddingBottom: '80px' }}>
       <DesktopNav />
       {/* Header */}
-      <header className="mobile-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 20px' }}>
-        <h1 style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '22px' }}>Profile</h1>
-        <button onClick={() => navigate('/settings')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--ink)' }}>
-          <Settings size={22} />
+      <header className="mobile-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '4px 20px' }}>
+        <h1 style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '26px', lineHeight: 1.15, color: 'var(--ink)', margin: 0 }}>Profile</h1>
+        <button
+          onClick={() => navigate('/settings')}
+          style={{
+            width: '40px', height: '40px', borderRadius: '50%',
+            border: '1.5px solid var(--border-subtle)',
+            background: 'var(--surface-card)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            cursor: 'pointer', flexShrink: 0, padding: 0,
+          }}
+        >
+          <Settings size={19} color="var(--ink)" />
         </button>
       </header>
 
-      <div style={{ padding: '0 20px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+      <div style={{ padding: '8px 20px 16px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
         {/* Avatar + name */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
           <Avatar initials={initial} color="var(--denim)" size={64} />
           <div>
-            <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '22px' }}>{profile?.name ?? 'You'}</div>
-            <div style={{ fontSize: '14px', color: 'var(--text-muted)', fontFamily: 'var(--font-body)' }}>
+            <div style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '20px', color: 'var(--ink)' }}>{profile?.name ?? 'You'}</div>
+            <div style={{ fontSize: '14px', color: 'var(--text-muted)', fontFamily: 'var(--font-body)', marginTop: '2px' }}>
               {profile?.home_city ?? 'Somewhere'} · swapping since 2026{rating != null ? ` · ★ ${rating.toFixed(1)}` : ''}
             </div>
           </div>
@@ -124,19 +133,22 @@ export function Profile() {
           {[
             { label: 'Swaps done', value: String(swapCount) },
             { label: 'On the table', value: String(activeCount) },
-            { label: 'Rating', value: rating != null ? `${rating.toFixed(1)} ★` : '—' },
+            { label: 'Rating', value: rating != null ? `★ ${rating.toFixed(1)}` : '—' },
           ].map((stat) => (
             <Card key={stat.label} style={{ textAlign: 'center', padding: '12px 8px' }}>
-              <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '22px', color: 'var(--swapp-green)' }}>{stat.value}</div>
-              <div style={{ fontSize: '12px', color: 'var(--text-muted)', fontFamily: 'var(--font-display)', fontWeight: 600, marginTop: '2px' }}>{stat.label}</div>
+              <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '24px', color: 'var(--swapp-green)' }}>{stat.value}</div>
+              <div style={{ fontSize: '12.5px', color: 'var(--text-muted)', fontFamily: 'var(--font-body)', marginTop: '2px' }}>{stat.label}</div>
             </Card>
           ))}
         </div>
 
         {/* Trusted swapper progress */}
         <Card>
-          <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '16px', marginBottom: '8px' }}>Trusted Swapper</div>
-          <div style={{ fontSize: '14px', color: 'var(--text-muted)', marginBottom: '12px' }}>{swapCount} / 15 swaps to unlock badge</div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+            <div style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '15.5px', color: 'var(--ink)' }}>Trusted Swapper</div>
+            <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '13px', color: 'var(--swapp-green)', whiteSpace: 'nowrap' }}>{swapCount} / 15</div>
+          </div>
+          <div style={{ fontSize: '12.5px', color: 'var(--text-muted)', marginBottom: '8px' }}>{swapCount} / 15 swaps to unlock badge</div>
           <div style={{ height: '8px', background: 'var(--parchment-deep)', borderRadius: 'var(--radius-pill)', overflow: 'hidden' }}>
             <div style={{ height: '100%', width: `${Math.min((swapCount / 15) * 100, 100)}%`, background: 'var(--swapp-green)', borderRadius: 'var(--radius-pill)', transition: 'width var(--dur-med)' }} />
           </div>
@@ -144,9 +156,9 @@ export function Profile() {
 
         {/* Hunt radius */}
         <Card>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
-            <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '16px' }}>Hunt radius</div>
-            <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '16px', color: 'var(--swapp-green)' }}>{radius} km</div>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+            <div style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '15.5px', color: 'var(--ink)' }}>Hunt radius</div>
+            <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '14px', color: 'var(--swapp-green)' }}>{radius} km</div>
           </div>
           <input
             type="range"
@@ -165,7 +177,7 @@ export function Profile() {
         {/* Listings grid */}
         <div>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-            <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '16px' }}>On the table</div>
+            <div style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '16px', color: 'var(--ink)' }}>Your finds on the table</div>
             <button
               onClick={() => setManageMode((m) => !m)}
               style={{ background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '14px', color: manageMode ? 'var(--terracotta)' : 'var(--swapp-green)' }}
@@ -173,7 +185,7 @@ export function Profile() {
               {manageMode ? 'Done' : 'Manage'}
             </button>
           </div>
-          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
             {items.map((item) => (
               <button
                 key={item.id}
@@ -182,7 +194,7 @@ export function Profile() {
                   position: 'relative',
                   width: '78px',
                   height: '78px',
-                  borderRadius: 'var(--radius-card-sm)',
+                  borderRadius: '12px',
                   background: 'var(--parchment-deep)',
                   overflow: 'hidden',
                   border: 'none',
@@ -211,7 +223,7 @@ export function Profile() {
               style={{
                 width: '78px',
                 height: '78px',
-                borderRadius: 'var(--radius-card-sm)',
+                borderRadius: '12px',
                 background: 'var(--parchment-deep)',
                 border: '1.5px dashed var(--ink-faint)',
                 cursor: 'pointer',

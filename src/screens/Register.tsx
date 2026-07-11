@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router'
-import { ArrowLeft, ChevronRight } from 'lucide-react'
+import { ArrowLeft, ChevronDown, MapPin } from 'lucide-react'
 import { Button } from '../components/Button'
 import { Input } from '../components/Input'
 import { Sheet } from '../components/Sheet'
@@ -76,80 +76,102 @@ export function Register() {
           style={{
             display: 'flex',
             alignItems: 'center',
-            gap: '12px',
-            padding: '16px 24px',
-            borderBottom: '1px solid var(--border-subtle)',
+            justifyContent: 'space-between',
+            padding: '6px 20px',
+            flexShrink: 0,
           }}
         >
-          <button onClick={() => navigate(-1)} style={{ display: 'flex', alignItems: 'center', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--ink)' }}>
-            <ArrowLeft size={22} />
+          <button
+            onClick={() => navigate(-1)}
+            style={{
+              width: '40px', height: '40px', borderRadius: '50%',
+              border: '1.5px solid var(--border-subtle)',
+              background: 'var(--surface-card)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              cursor: 'pointer', flexShrink: 0, padding: 0,
+            }}
+          >
+            <ArrowLeft size={19} color="var(--ink)" />
           </button>
-          <h1 style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '18px' }}>Create account</h1>
+          <h3 style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '18px', color: 'var(--ink)', margin: 0 }}>
+            Create account
+          </h3>
+          <span style={{ width: '40px' }} />
         </header>
 
-        <div style={{ flex: 1, padding: '24px', display: 'flex', flexDirection: 'column', gap: '20px', width: '100%', overflowY: 'auto' }}>
-          {/* Desktop back + title */}
-          <div className="desktop-nav" style={{ display: 'none', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
-            <button onClick={() => navigate(-1)} style={{ display: 'flex', alignItems: 'center', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--ink)' }}>
-              <ArrowLeft size={22} />
-            </button>
-            <h1 style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '24px' }}>Create account</h1>
-          </div>
+        <div style={{ flex: 1, padding: '10px 24px 24px', display: 'flex', flexDirection: 'column', gap: '16px', width: '100%', overflowY: 'auto' }}>
 
-          <p style={{ font: 'var(--type-body)', color: 'var(--text-muted)' }}>
-            Join a community of curious swappers. No money involved — just interesting trades.
+          <p style={{ fontFamily: 'var(--font-body)', fontSize: '16px', lineHeight: 1.55, color: 'var(--text-muted)', margin: 0 }}>
+            Just an email — we'll send you a magic link. No passwords to forget.
           </p>
 
           <Input
             label="Your name"
-            placeholder="What do folks call you?"
+            placeholder="e.g. Maya"
             value={name}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
           />
           <Input
             label="Email"
             type="email"
-            placeholder="you@example.com"
+            placeholder="you@somewhere.com"
             value={email}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
           />
 
           {/* City picker button */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-            <label style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '14px' }}>City</label>
+            <div style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '14px', color: 'var(--ink)' }}>
+              Where do you swap?
+            </div>
             <button
               onClick={() => setCityOpen(true)}
               style={{
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                padding: '12px 16px',
-                background: 'var(--cream)',
+                minHeight: '44px',
+                padding: '11px 16px',
+                background: '#fff',
                 border: '1.5px solid var(--border-subtle)',
-                borderRadius: 'var(--radius-card)',
+                borderRadius: 'var(--radius-card-sm)',
                 cursor: 'pointer',
                 fontFamily: 'var(--font-body)',
-                fontSize: '17px',
-                color: selectedCity ? 'var(--ink)' : 'var(--text-muted)',
-                textAlign: 'left',
+                fontSize: '16px',
+                color: 'var(--ink)',
+                width: '100%',
               }}
             >
-              {selectedCity || 'Choose your city'}
-              <ChevronRight size={18} color="var(--ink-soft)" />
+              <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <MapPin size={16} color="var(--swapp-green)" />
+                {selectedCity || 'Berlin'}
+              </span>
+              <ChevronDown size={15} color="var(--swapp-green)" />
             </button>
+            <p style={{ fontSize: '12.5px', lineHeight: 1.55, color: 'var(--text-muted)', margin: 0 }}>
+              Detected from your location — tap to change
+            </p>
           </div>
 
-          {/* Notify checkbox */}
-          <label style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }}>
-            <input
-              type="checkbox"
-              checked={notify}
-              onChange={(e) => setNotify(e.target.checked)}
-              style={{ width: '20px', height: '20px', accentColor: 'var(--swapp-green)' }}
-            />
-            <span style={{ fontFamily: 'var(--font-body)', fontSize: '16px', color: 'var(--ink)' }}>
-              Tell me when someone likes my finds
+          {/* Notify checkbox — custom styled */}
+          <label style={{ display: 'inline-flex', alignItems: 'center', gap: '10px', cursor: 'pointer', fontFamily: 'var(--font-body)', fontSize: '16px', color: 'var(--ink)', minHeight: '28px' }}>
+            <span
+              style={{
+                width: '22px', height: '22px', flexShrink: 0,
+                borderRadius: '7px',
+                background: notify ? 'var(--swapp-green)' : 'var(--border-subtle)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                transition: 'background 140ms',
+              }}
+              onClick={() => setNotify((v) => !v)}
+            >
+              {notify && (
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                  <path d="M2 6.5L4.8 9.2L10 3.2" stroke="var(--parchment)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              )}
             </span>
+            Tell me when someone likes my finds
           </label>
 
           <div style={{ flex: 1 }} />
@@ -164,7 +186,7 @@ export function Register() {
             {sending ? 'Sending…' : 'Send me a magic link'}
           </Button>
 
-          <p style={{ font: 'var(--type-caption)', color: 'var(--text-muted)', textAlign: 'center', letterSpacing: '0.02em' }}>
+          <p style={{ textAlign: 'center', fontSize: '13px', color: 'var(--text-muted)', margin: 0 }}>
             By joining you agree to the house rules
           </p>
         </div>

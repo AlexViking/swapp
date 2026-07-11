@@ -85,12 +85,12 @@ export function Rate() {
       }}
     >
       {/* Kicker */}
-      <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '13px', letterSpacing: 'var(--tracking-caption)', textTransform: 'uppercase', color: 'var(--swapp-green)' }}>
+      <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '12px', letterSpacing: '0.18em', textTransform: 'uppercase', color: 'var(--swapp-green)' }}>
         Swap complete
       </div>
 
-      <h1 style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '26px', color: 'var(--ink)' }}>
-        How was trading with {otherName}?
+      <h1 style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '28px', lineHeight: 1.15, color: 'var(--ink)', margin: 0 }}>
+        How was trading<br />with {otherName}?
       </h1>
 
       <Avatar initials={initial} color="var(--terracotta)" size={72} />
@@ -128,17 +128,18 @@ export function Rate() {
         value={note}
         onChange={(e) => setNote(e.target.value)}
         placeholder="Say something kind (optional)"
-        rows={3}
         style={{
           width: '100%',
           maxWidth: '400px',
+          boxSizing: 'border-box',
           padding: '12px 16px',
-          background: 'var(--cream)',
+          background: '#fff',
           border: '1.5px solid var(--border-subtle)',
-          borderRadius: 'var(--radius-card)',
+          borderRadius: 'var(--radius-card-sm)',
           fontFamily: 'var(--font-body)',
-          fontSize: '16px',
-          resize: 'vertical',
+          fontSize: '15px',
+          height: '76px',
+          resize: 'none',
           outline: 'none',
           color: 'var(--ink)',
         }}

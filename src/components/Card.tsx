@@ -12,7 +12,8 @@ export function Card({ children, style, onClick }: CardProps) {
       onClick={onClick}
       style={{
         background: 'var(--surface-card)',
-        borderRadius: 'var(--radius-card)',
+        border: '1px solid var(--border-subtle)',
+        borderRadius: 'var(--radius-card-lg)',
         boxShadow: 'var(--shadow-card)',
         padding: 'var(--space-4)',
         cursor: onClick ? 'pointer' : undefined,

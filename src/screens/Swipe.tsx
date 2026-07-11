@@ -1,6 +1,6 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useImperativeHandle, forwardRef } from 'react'
 import { useNavigate } from 'react-router'
-import { MapPin, X, Heart, Plus, Camera } from 'lucide-react'
+import { MapPin, ChevronDown, X, Heart, Plus, Camera } from 'lucide-react'
 import { motion, useMotionValue, useTransform, animate } from 'framer-motion'
 import { TabBar } from '../components/TabBar'
 import { DesktopNav } from '../components/DesktopNav'
@@ -43,27 +43,31 @@ function OfferThumb({ item, selected, onClick }: { item: Item; selected: boolean
         flexShrink: 0,
         width: 64,
         height: 64,
-        borderRadius: 'var(--radius-card-sm)',
-        overflow: 'hidden',
-        border: selected ? '2.5px solid var(--swapp-green)' : '2.5px solid transparent',
+        borderRadius: 12,
+        overflow: 'visible',
+        border: 'none',
+        outline: selected ? '3px solid var(--swapp-green)' : 'none',
+        outlineOffset: selected ? '2px' : undefined,
         cursor: 'pointer',
         position: 'relative',
         background: 'var(--parchment-deep)',
         padding: 0,
       }}
     >
-      {item.images?.[0]
-        ? <img src={item.images[0]} alt={item.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-        : <div style={{ width: '100%', height: '100%', background: 'var(--parchment-deep)' }} />
-      }
+      <div style={{ width: 64, height: 64, borderRadius: 12, overflow: 'hidden' }}>
+        {item.images?.[0]
+          ? <img src={item.images[0]} alt={item.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+          : <div style={{ width: '100%', height: '100%', background: 'var(--parchment-deep)' }} />
+        }
+      </div>
       {selected && (
         <div style={{
           position: 'absolute', top: -6, right: -6,
-          width: 18, height: 18, borderRadius: '50%',
+          width: 22, height: 22, borderRadius: '50%',
           background: 'var(--swapp-green)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
         }}>
-          <span style={{ color: '#fff', fontSize: 11, fontWeight: 700 }}>✓</span>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--parchment)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 12.5l5 5L20 6.5" /></svg>
         </div>
       )}
     </button>
@@ -93,12 +97,11 @@ function AddThumb({ onClick }: { onClick: () => void }) {
   )
 }
 
+type SwipeCardHandle = { fly: (dir: 1 | -1, cb: () => void) => void }
+
 // Isolated card component — owns its own motion values so parent never re-renders during drag
-function SwipeCard({ item, onLike, onPass }: {
-  item: Item
-  onLike: () => void
-  onPass: () => void
-}) {
+const SwipeCard = forwardRef<SwipeCardHandle, { item: Item; onLike: () => void; onPass: () => void }>(
+function SwipeCard({ item, onLike, onPass }, ref) {
   const x = useMotionValue(0)
   const rotate = useTransform(x, [-200, 0, 200], [-15, 0, 15])
   const likeOpacity = useTransform(x, [20, 100], [0, 1])
@@ -112,6 +115,8 @@ function SwipeCard({ item, onLike, onPass }: {
       velocity: dir * 800,
     }).then(cb)
   }
+
+  useImperativeHandle(ref, () => ({ fly }))
 
   return (
     <motion.div
@@ -175,26 +180,27 @@ function SwipeCard({ item, onLike, onPass }: {
           <span style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 28, color: '#ef4444', textTransform: 'uppercase' }}>NOPE</span>
         </motion.div>
         {/* Badges */}
-        <div style={{ position: 'absolute', bottom: 12, left: 12 }}>
-          <span style={{ background: 'var(--brass)', color: 'var(--ink)', fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 11, letterSpacing: '0.1em', textTransform: 'uppercase', padding: '4px 10px', borderRadius: 'var(--radius-pill)' }}>
+        <div style={{ position: 'absolute', top: 14, left: 14 }}>
+          <span style={{ background: 'var(--brass)', color: 'var(--ink)', fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 12, letterSpacing: '0.14em', textTransform: 'uppercase', padding: '5px 12px', borderRadius: 'var(--radius-pill)', whiteSpace: 'nowrap' }}>
             {conditionLabel(item.condition)} condition
           </span>
         </div>
-        <div style={{ position: 'absolute', bottom: 12, right: 12 }}>
-          <span style={{ background: 'var(--terracotta)', color: 'white', fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 11, letterSpacing: '0.1em', textTransform: 'uppercase', padding: '4px 10px', borderRadius: 'var(--radius-pill)' }}>
+        <div style={{ position: 'absolute', top: 14, right: 14 }}>
+          <span style={{ background: 'var(--terracotta)', color: 'white', fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 12, letterSpacing: '0.14em', textTransform: 'uppercase', padding: '5px 12px', borderRadius: 'var(--radius-pill)', whiteSpace: 'nowrap' }}>
             3 eyeing this
           </span>
         </div>
       </div>
       {/* Info */}
       <div style={{ padding: '14px 16px 16px', flex: 1, display: 'flex', flexDirection: 'column', gap: 6 }}>
-        <h3 style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 20, color: 'var(--ink)', margin: 0 }}>
+        <h3 style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 20, lineHeight: 1.3, color: 'var(--ink)', margin: 0 }}>
           {item.title}
         </h3>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'var(--text-muted)', fontSize: 14, fontFamily: 'var(--font-body)' }}>
-          <MapPin size={13} color="var(--swapp-green)" />
-          {item.location_city ?? 'Nearby'} · {item.ownerName ?? 'Swapper'}
-          {item.ownerRating ? ` · ★ ${item.ownerRating}` : ''}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 5, color: 'var(--text-muted)', fontSize: 14, fontFamily: 'var(--font-body)' }}>
+          <MapPin size={14} color="var(--swapp-green)" />
+          <span>{item.location_city ?? 'Nearby'}</span>
+          <span>·</span>
+          <span>{item.ownerName ?? 'Swapper'}{item.ownerRating ? ` · ★ ${item.ownerRating}` : ''}</span>
         </div>
         {item.wants_in_return?.length > 0 && (
           <p style={{ fontFamily: 'var(--font-body)', fontSize: 14, color: 'var(--text-muted)', margin: 0 }}>
@@ -204,7 +210,7 @@ function SwipeCard({ item, onLike, onPass }: {
       </div>
     </motion.div>
   )
-}
+})
 
 function LocationChip({ city }: { city: string }) {
   return (
@@ -213,19 +219,19 @@ function LocationChip({ city }: { city: string }) {
         display: 'flex',
         alignItems: 'center',
         gap: 6,
-        padding: '6px 14px',
-        background: 'var(--parchment-deep)',
-        border: '1px solid var(--border-subtle)',
+        padding: '7px 14px',
+        background: 'var(--surface-card)',
+        border: '1.5px solid var(--border-subtle)',
         borderRadius: 'var(--radius-pill)',
         cursor: 'pointer',
-        fontFamily: 'var(--font-display)',
-        fontWeight: 600,
+        fontFamily: 'var(--font-body)',
         fontSize: 14,
         color: 'var(--ink)',
       }}
     >
-      <MapPin size={14} color="var(--swapp-green)" />
+      <MapPin size={15} color="var(--swapp-green)" />
       {city} · 5 km
+      <ChevronDown size={13} color="var(--ink-soft)" />
     </button>
   )
 }
@@ -243,8 +249,8 @@ export function Swipe() {
   const [cursor, setCursor] = useState(0)
   const [noOfferError, setNoOfferError] = useState(false)
 
-  // Drag-to-swipe
   const constraintsRef = useRef<HTMLDivElement>(null)
+  const cardRef = useRef<SwipeCardHandle>(null)
 
   useEffect(() => {
     if (!userId) return
@@ -347,11 +353,11 @@ export function Swipe() {
     }
   }, [cards.length])
 
-  // Keyboard: left arrow → pass, right arrow → like
+  // Keyboard: left arrow → pass, right arrow → like (with animation)
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
-      if (e.key === 'ArrowLeft') handlePass()
-      if (e.key === 'ArrowRight') handleLike()
+      if (e.key === 'ArrowLeft') cardRef.current?.fly(-1, handlePass)
+      if (e.key === 'ArrowRight') cardRef.current?.fly(1, handleLike)
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
@@ -378,7 +384,7 @@ export function Swipe() {
   }
 
   return (
-    <div style={{ minHeight: '100dvh', display: 'flex', flexDirection: 'column', background: 'var(--surface-page)' }}>
+    <div style={{ height: '100dvh', display: 'flex', flexDirection: 'column', background: 'var(--surface-page)', overflowY: 'auto' }}>
       <DesktopNav />
 
       {/* Mobile header */}
@@ -388,19 +394,17 @@ export function Swipe() {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          padding: '8px 20px',
-          background: 'var(--surface-card)',
-          borderBottom: '1px solid var(--border-subtle)',
+          padding: '4px 20px 8px',
           flexShrink: 0,
         }}
       >
-        <img src={logoUrl} alt="Swapp" style={{ height: 36 }} />
+        <img src={logoUrl} alt="Swapp" style={{ height: 44 }} />
         <LocationChip city={city} />
       </header>
 
       <div
         className="hunt-layout"
-        style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden' }}
+        style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0 }}
       >
         {/* Left rail — desktop */}
         <div className="hunt-left" style={{ display: 'none' }}>
@@ -410,7 +414,7 @@ export function Swipe() {
           <p style={{ fontSize: 13, color: 'var(--text-muted)', fontFamily: 'var(--font-body)', margin: 0 }}>
             Pick what you'd trade before you like.
           </p>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
             {myItems.map((item) => (
               <OfferThumb key={item.id} item={item} selected={selectedOffer === item.id} onClick={() => setSelectedOffer(item.id)} />
             ))}
@@ -444,6 +448,7 @@ export function Swipe() {
 
         {/* Center — card stack */}
         <div
+          className="hunt-center-pane"
           style={{
             flex: 1,
             display: 'flex',
@@ -459,26 +464,26 @@ export function Swipe() {
           }}
         >
           {/* Card stack */}
-          <div ref={constraintsRef} style={{ position: 'relative', width: '100%', height: 440, flexShrink: 0 }}>
+          <div ref={constraintsRef} className="hunt-card-stack" style={{ position: 'relative', width: '100%', height: 440, flexShrink: 0 }}>
             {/* Ghost cards */}
             {cards[2] && (
               <div style={{
-                position: 'absolute', inset: 0,
+                position: 'absolute', top: 18, left: 18, right: 18, bottom: -14,
                 background: 'var(--surface-card)',
                 border: '1px solid var(--border-subtle)',
                 borderRadius: 20,
-                transform: 'scale(0.92) translateY(16px)',
+                opacity: 0.5,
                 zIndex: 1,
                 boxShadow: 'var(--shadow-card)',
               }} />
             )}
             {cards[1] && (
               <div style={{
-                position: 'absolute', inset: 0,
+                position: 'absolute', top: 9, left: 9, right: 9, bottom: -7,
                 background: 'var(--surface-card)',
                 border: '1px solid var(--border-subtle)',
                 borderRadius: 20,
-                transform: 'scale(0.96) translateY(8px)',
+                opacity: 0.8,
                 zIndex: 2,
                 boxShadow: 'var(--shadow-card)',
               }} />
@@ -496,6 +501,7 @@ export function Swipe() {
             ) : topCard ? (
               <SwipeCard
                 key={topCard.id}
+                ref={cardRef}
                 item={topCard}
                 onLike={handleLike}
                 onPass={handlePass}
@@ -533,11 +539,11 @@ export function Swipe() {
           </div>
 
           {/* Offer strip — mobile only */}
-          <div className="hunt-mobile-offer-strip" style={{ width: '100%' }}>
+          <div className="hunt-mobile-offer-strip" style={{ width: '100%', padding: '14px 0 4px' }}>
             <p style={{
               fontFamily: 'var(--font-display)', fontWeight: 700,
-              fontSize: 11, letterSpacing: '0.18em', textTransform: 'uppercase',
-              color: noOfferError ? 'var(--terracotta)' : 'var(--text-muted)', margin: '0 0 10px',
+              fontSize: 12, letterSpacing: '0.18em', textTransform: 'uppercase',
+              color: noOfferError ? 'var(--terracotta)' : 'var(--text-muted)', margin: '0 0 8px',
               transition: 'color 0.2s',
             }}>
               {noOfferError ? 'Pick an item to offer first!' : 'Offer one of yours'}
@@ -550,16 +556,16 @@ export function Swipe() {
             </div>
           </div>
 
-          {/* FABs — mobile */}
+          {/* FABs — mobile only */}
           <div
             className="hunt-mobile-fabs"
-            style={{ display: 'flex', gap: 32, justifyContent: 'center', alignItems: 'center' }}
+            style={{ display: 'flex', gap: 40, justifyContent: 'center', alignItems: 'center', padding: '12px 0 8px' }}
           >
             <button
               onClick={handlePass}
               disabled={!topCard}
               style={{
-                width: 64, height: 64, borderRadius: '50%',
+                width: 62, height: 62, borderRadius: '50%',
                 background: 'var(--surface-card)',
                 border: '1.5px solid var(--border-subtle)',
                 boxShadow: 'var(--shadow-float)',
@@ -568,13 +574,13 @@ export function Swipe() {
                 opacity: topCard ? 1 : 0.4,
               }}
             >
-              <X size={28} color="var(--terracotta)" />
+              <X size={26} color="var(--terracotta)" />
             </button>
             <button
               onClick={handleLike}
               disabled={!topCard}
               style={{
-                width: 64, height: 64, borderRadius: '50%',
+                width: 62, height: 62, borderRadius: '50%',
                 background: 'var(--swapp-green)',
                 border: 'none',
                 boxShadow: 'var(--shadow-float)',
@@ -583,16 +589,16 @@ export function Swipe() {
                 opacity: topCard ? 1 : 0.4,
               }}
             >
-              <Heart size={28} color="var(--parchment)" fill="var(--parchment)" />
+              <Heart size={26} color="var(--parchment)" fill="var(--parchment)" />
             </button>
           </div>
 
-          {/* FABs + hints — desktop */}
+          {/* FABs — desktop only */}
           <div
             className="hunt-desktop-fabs"
-            style={{ display: 'none', flexDirection: 'column', alignItems: 'center', gap: 8 }}
+            style={{ display: 'none', flexDirection: 'column', alignItems: 'center', gap: 8, padding: '14px 0', flexShrink: 0 }}
           >
-            <div style={{ display: 'flex', gap: 40, alignItems: 'center' }}>
+            <div style={{ display: 'flex', gap: 36, alignItems: 'center' }}>
               <button
                 onClick={handlePass}
                 disabled={!topCard}
@@ -624,10 +630,11 @@ export function Swipe() {
                 <Heart size={24} color="var(--parchment)" fill="var(--parchment)" />
               </button>
             </div>
-            <p style={{ fontFamily: 'var(--font-body)', fontSize: 13, color: 'var(--text-muted)' }}>
+            <p style={{ fontFamily: 'var(--font-body)', fontSize: 13, color: 'var(--text-muted)', margin: 0 }}>
               ← pass &nbsp;·&nbsp; → like &nbsp;·&nbsp; keyboard works too
             </p>
           </div>
+
         </div>
 
         {/* Right rail — desktop */}

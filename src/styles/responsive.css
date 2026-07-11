@@ -21,7 +21,7 @@
   }
 
   #root {
-    padding-top: 64px; /* offset for fixed desktop nav */
+    padding-top: 68px; /* offset for fixed desktop nav */
   }
 
   /* Welcome: split screen */
@@ -80,7 +80,7 @@
   .matches-chat-split {
     display: grid !important;
     grid-template-columns: 340px 1fr;
-    height: calc(100dvh - 64px);
+    min-height: calc(100dvh - 68px);
   }
 
   .matches-list-col {
@@ -96,6 +96,10 @@
     overflow: hidden;
   }
 
+  .matches-desktop-title {
+    display: flex !important;
+  }
+
   /* Hunt: three-pane layout */
   .hunt-three-pane {
     display: grid !important;
@@ -108,6 +112,7 @@
     grid-template-columns: 280px 1fr 320px !important;
     flex: 1;
     overflow: hidden;
+    min-height: 0;
   }
 
   .hunt-left,
@@ -115,9 +120,9 @@
     display: flex !important;
     flex-direction: column;
     border-right: 1px solid var(--border-subtle);
-    padding: 20px 16px;
+    padding: 22px;
     overflow-y: auto;
-    gap: 12px;
+    gap: 16px;
   }
 
   .hunt-right,
@@ -125,9 +130,9 @@
     display: flex !important;
     flex-direction: column;
     border-left: 1px solid var(--border-subtle);
-    padding: 20px 16px;
+    padding: 22px;
     overflow-y: auto;
-    gap: 12px;
+    gap: 14px;
   }
 
   .hunt-mobile-offer-strip {
@@ -140,10 +145,31 @@
 
   .hunt-desktop-fabs {
     display: flex !important;
+    flex-direction: column;
+    align-items: center;
   }
 
   .desktop-kb-hints {
     display: flex !important;
+  }
+
+  /* Desktop card stack: 400px wide, fills pane height */
+  .hunt-center-pane {
+    max-width: none !important;
+    padding: 22px 0 !important;
+    margin: 0 !important;
+    gap: 14px !important;
+    overflow: hidden !important;
+    min-height: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
+  .hunt-card-stack {
+    width: 400px !important;
+    height: auto !important;
+    flex: 1 !important;
+    min-height: 0 !important;
+    flex-shrink: 1 !important;
   }
 
   /* AddItem: two-column layout */
@@ -151,7 +177,7 @@
     display: grid !important;
     grid-template-columns: 520px 1fr;
     gap: 0;
-    height: calc(100dvh - 64px);
+    height: calc(100dvh - 68px);
     overflow: hidden;
   }
 
@@ -177,6 +203,10 @@
 
 /* Mobile-only rules */
 @media (max-width: 1023px) {
+  .matches-list-col {
+    padding-bottom: 80px;
+  }
+
   .desktop-nav {
     display: none !important;
   }

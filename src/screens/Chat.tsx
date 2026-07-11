@@ -175,52 +175,76 @@ export function Chat() {
         style={{
           display: 'flex',
           alignItems: 'center',
-          gap: '12px',
-          padding: '12px 16px',
-          background: 'var(--surface-card)',
-          borderBottom: '1px solid var(--border-subtle)',
+          justifyContent: 'space-between',
+          padding: '4px 16px',
           flexShrink: 0,
         }}
       >
-        <button onClick={() => navigate('/matches')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--ink)', minWidth: 44, minHeight: 44, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <ArrowLeft size={22} />
-        </button>
-        <Avatar initials={ctx.otherName[0]?.toUpperCase() ?? 'S'} color={AVATAR_COLORS[0]} size={36} />
-        <div style={{ flex: 1 }}>
-          <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '16px', color: 'var(--ink)' }}>{ctx.otherName}</div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: 'var(--text-muted)' }}>
-            <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#22c55e', display: 'inline-block' }} />
-            connected · peer-to-peer
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <button
+            onClick={() => navigate('/matches')}
+            style={{
+              width: '40px', height: '40px', borderRadius: '50%',
+              border: '1.5px solid var(--border-subtle)',
+              background: 'var(--surface-card)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              cursor: 'pointer', flexShrink: 0, padding: 0,
+            }}
+          >
+            <ArrowLeft size={19} color="var(--ink)" />
+          </button>
+          <Avatar initials={ctx.otherName[0]?.toUpperCase() ?? 'S'} color={AVATAR_COLORS[0]} size={42} />
+          <div>
+            <p style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '17px', color: 'var(--ink)', margin: 0 }}>{ctx.otherName}</p>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '5px', marginTop: '1px' }}>
+              <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--swapp-green)', display: 'inline-block' }} />
+              <span style={{ fontSize: '12.5px', color: 'var(--text-muted)' }}>connected · peer-to-peer</span>
+            </div>
           </div>
         </div>
-        <button style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--ink)', minWidth: 44, minHeight: 44, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <MoreVertical size={22} />
+        <button
+          style={{
+            width: '40px', height: '40px', borderRadius: '50%',
+            border: '1.5px solid var(--border-subtle)',
+            background: 'var(--surface-card)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            cursor: 'pointer', flexShrink: 0, padding: 0,
+          }}
+        >
+          <MoreVertical size={19} color="var(--ink)" />
         </button>
       </header>
 
       {/* Pinned swap card */}
-      <div style={{ padding: '12px 16px', flexShrink: 0 }}>
-        <Card style={{ padding: '12px 16px' }}>
+      <div style={{ padding: '4px 16px', flexShrink: 0 }}>
+        <Card style={{ padding: '10px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <div style={{ width: '40px', height: '40px', borderRadius: '8px', background: 'var(--brass)', flexShrink: 0 }} />
-            <div style={{ fontSize: '18px', color: 'var(--ink-soft)' }}>⇄</div>
-            <div style={{ width: '40px', height: '40px', borderRadius: '8px', background: 'var(--denim)', flexShrink: 0 }} />
+            {/* Item A thumb */}
+            <div style={{ width: '42px', height: '42px', borderRadius: '8px', background: 'var(--brass)', flexShrink: 0, overflow: 'hidden' }}>
+              {ctx.itemAImages[0] && <img src={ctx.itemAImages[0]} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
+            </div>
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--swapp-green)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 8h13M14 4l4 4-4 4M20 16H7M10 12l-4 4 4 4"/></svg>
+            {/* Item B thumb */}
+            <div style={{ width: '42px', height: '42px', borderRadius: '8px', background: 'var(--denim)', flexShrink: 0, overflow: 'hidden' }}>
+              {ctx.itemBImages[0] && <img src={ctx.itemBImages[0]} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
+            </div>
             <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '14px', color: 'var(--ink)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+              <div style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '14.5px', color: 'var(--ink)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', margin: 0 }}>
                 {ctx.itemATitle} ⇄ {ctx.itemBTitle}
               </div>
-              <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>swap in progress</div>
+              <div style={{ fontSize: '12.5px', color: 'var(--text-muted)', margin: 0 }}>swap in progress</div>
             </div>
             <button
               onClick={() => setDetailsOpen(true)}
               style={{
-                padding: '6px 14px',
-                background: 'var(--parchment-deep)',
-                border: '1px solid var(--border-subtle)',
+                padding: '7px 16px',
+                minHeight: '36px',
+                background: 'transparent',
+                border: '1.5px solid var(--border-subtle)',
                 borderRadius: 'var(--radius-pill)',
                 fontFamily: 'var(--font-display)',
                 fontWeight: 600,
-                fontSize: 13,
+                fontSize: 14,
                 cursor: 'pointer',
                 color: 'var(--ink)',
                 flexShrink: 0,
@@ -233,22 +257,26 @@ export function Chat() {
       </div>
 
       {/* Swap stepper */}
-      <div style={{ padding: '0 16px 12px', flexShrink: 0 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 16px', background: 'var(--cream)', borderRadius: 'var(--radius-card)', border: '1px solid var(--border-subtle)' }}>
+      <div style={{ padding: '2px 16px 0', flexShrink: 0 }}>
+        <div style={{ display: 'flex', padding: '6px 4px 0' }}>
           {steps.map((s, i) => (
             <React.Fragment key={s.label}>
-              {i > 0 && <div style={{ flex: 1, height: '1px', background: s.done ? 'var(--swapp-green)' : 'var(--border-subtle)' }} />}
+              {i > 0 && (
+                <div style={{ flex: 1, height: '1px', background: s.done ? 'var(--swapp-green)' : 'var(--border-subtle)', alignSelf: 'center', marginBottom: '18px' }} />
+              )}
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px' }}>
                 <div style={{
-                  width: '20px', height: '20px', borderRadius: '50%',
-                  background: s.done ? 'var(--swapp-green)' : s.next ? 'var(--parchment-deep)' : 'var(--border-subtle)',
-                  border: s.next ? '2px solid var(--swapp-green)' : 'none',
+                  width: '18px', height: '18px', borderRadius: '50%',
+                  background: s.done ? 'var(--swapp-green)' : s.next ? 'var(--parchment-deep)' : 'var(--parchment-deep)',
+                  border: s.next ? '1.5px solid var(--swapp-green)' : 'none',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: '11px',
+                  flexShrink: 0,
                 }}>
-                  {s.done ? <span style={{ color: '#fff' }}>✓</span> : null}
+                  {s.done && (
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--parchment)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 12.5l5 5L20 6.5" /></svg>
+                  )}
                 </div>
-                <span style={{ fontSize: '10px', fontFamily: 'var(--font-display)', fontWeight: 600, color: s.done ? 'var(--swapp-green)' : 'var(--text-muted)', whiteSpace: 'nowrap' }}>
+                <span style={{ fontSize: '12px', fontFamily: 'var(--font-display)', fontWeight: s.done ? 700 : 400, color: s.done ? 'var(--swapp-green)' : 'var(--text-muted)', whiteSpace: 'nowrap' }}>
                   {s.label}
                 </span>
               </div>
@@ -256,9 +284,9 @@ export function Chat() {
           ))}
         </div>
         {step < 2 && (
-          <div style={{ textAlign: 'center', fontSize: '11px', color: 'var(--text-muted)', fontFamily: 'var(--font-display)', fontWeight: 600, marginTop: '4px' }}>
-            {step === 0 ? 'Say hi and arrange a meetup' : 'One step left — confirm the swap!'}
-          </div>
+          <p style={{ fontSize: '11.5px', color: 'var(--text-muted)', textAlign: 'center', margin: '4px 0 0', fontFamily: 'var(--font-body)' }}>
+            {step === 0 ? 'Say hi and arrange a meetup' : 'One step left — meet up and it\'s yours'}
+          </p>
         )}
       </div>
 
@@ -268,12 +296,14 @@ export function Chat() {
         <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
           <div
             style={{
-              maxWidth: '70%',
+              maxWidth: '76%',
               padding: '10px 14px',
               background: 'var(--surface-card)',
-              borderRadius: '4px 14px 14px 14px',
+              border: '1px solid var(--border-subtle)',
+              borderRadius: '16px 16px 16px 4px',
               boxShadow: 'var(--shadow-card)',
-              fontSize: '16px',
+              fontSize: '15.5px',
+              lineHeight: 1.45,
               color: 'var(--ink)',
               fontFamily: 'var(--font-body)',
             }}
@@ -286,13 +316,15 @@ export function Chat() {
           <div key={msg.id} style={{ display: 'flex', justifyContent: msg.fromMe ? 'flex-end' : 'flex-start' }}>
             <div
               style={{
-                maxWidth: '70%',
+                maxWidth: '76%',
                 padding: '10px 14px',
                 background: msg.fromMe ? 'var(--swapp-green)' : 'var(--surface-card)',
                 color: msg.fromMe ? 'var(--parchment)' : 'var(--ink)',
-                borderRadius: msg.fromMe ? '14px 4px 14px 14px' : '4px 14px 14px 14px',
+                border: msg.fromMe ? 'none' : '1px solid var(--border-subtle)',
+                borderRadius: msg.fromMe ? '16px 16px 4px 16px' : '16px 16px 16px 4px',
                 boxShadow: 'var(--shadow-card)',
-                fontSize: '16px',
+                fontSize: '15.5px',
+                lineHeight: 1.45,
                 fontFamily: 'var(--font-body)',
               }}
             >
@@ -309,7 +341,7 @@ export function Chat() {
       </div>
 
       {/* Footer note */}
-      <div style={{ textAlign: 'center', fontSize: '11px', color: 'var(--text-muted)', padding: '4px 0', fontFamily: 'var(--font-display)', fontWeight: 600, letterSpacing: '0.05em' }}>
+      <div style={{ textAlign: 'center', fontSize: '12px', color: 'var(--text-muted)', padding: '4px 0', fontFamily: 'var(--font-body)', fontWeight: 400 }}>
         Delivered · encrypted device-to-device
       </div>
 
@@ -318,9 +350,7 @@ export function Chat() {
         style={{
           display: 'flex',
           gap: '10px',
-          padding: '12px 16px env(safe-area-inset-bottom, 12px)',
-          background: 'var(--surface-card)',
-          borderTop: '1px solid var(--border-subtle)',
+          padding: '8px 16px env(safe-area-inset-bottom, 10px)',
           flexShrink: 0,
         }}
       >
@@ -331,8 +361,9 @@ export function Chat() {
           placeholder={`Message ${ctx.otherName}…`}
           style={{
             flex: 1,
-            padding: '12px 16px',
-            background: 'var(--parchment-deep)',
+            minHeight: '48px',
+            padding: '0 20px',
+            background: '#fff',
             border: '1.5px solid var(--border-subtle)',
             borderRadius: 'var(--radius-pill)',
             fontFamily: 'var(--font-body)',
@@ -344,20 +375,19 @@ export function Chat() {
         <button
           onClick={sendMessage}
           style={{
-            width: '44px',
-            height: '44px',
+            width: '48px',
+            height: '48px',
             borderRadius: '50%',
-            background: input.trim() ? 'var(--swapp-green)' : 'var(--ink-faint)',
+            background: 'var(--swapp-green)',
             border: 'none',
             cursor: 'pointer',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             flexShrink: 0,
-            transition: `background var(--dur-fast)`,
           }}
         >
-          <Send size={18} color={input.trim() ? 'var(--parchment)' : 'var(--ink-soft)'} />
+          <Send size={20} color="var(--parchment)" />
         </button>
       </div>
       <Sheet open={detailsOpen} onClose={() => setDetailsOpen(false)} title="Swap details" height="auto">

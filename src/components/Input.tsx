@@ -18,16 +18,18 @@ export function Input(props: Props) {
 
   const fieldStyle: React.CSSProperties = {
     width: '100%',
-    padding: '12px 16px',
-    background: 'var(--cream)',
+    padding: '11px 16px',
+    minHeight: '44px',
+    background: '#fff',
     border: '1.5px solid var(--border-subtle)',
-    borderRadius: 'var(--radius-card)',
+    borderRadius: 'var(--radius-card-sm)',
     color: 'var(--text-body)',
     fontFamily: 'var(--font-body)',
-    fontSize: '17px',
+    fontSize: '16px',
     outline: 'none',
-    transition: 'border-color var(--dur-fast)',
-    resize: multiline ? 'vertical' : undefined,
+    transition: 'border-color var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out)',
+    resize: multiline ? 'none' : undefined,
+    boxSizing: 'border-box',
   }
 
   return (
@@ -40,7 +42,7 @@ export function Input(props: Props) {
       {multiline ? (
         <textarea
           {...(rest as React.TextareaHTMLAttributes<HTMLTextAreaElement>)}
-          style={{ ...fieldStyle, minHeight: '100px', ...(rest as React.TextareaHTMLAttributes<HTMLTextAreaElement>).style }}
+          style={{ ...fieldStyle, height: '84px', width: '100%', ...(rest as React.TextareaHTMLAttributes<HTMLTextAreaElement>).style }}
         />
       ) : (
         <input

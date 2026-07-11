@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react'
 import { useNavigate } from 'react-router'
-import { X, Camera, Plus } from 'lucide-react'
+import { X, Camera } from 'lucide-react'
 import { Button } from '../components/Button'
 import { Input } from '../components/Input'
 import { Tag } from '../components/Tag'
@@ -26,6 +26,7 @@ export function AddItem() {
   const [condition, setCondition] = useState<number | null>(null)
   const [wants, setWants] = useState<string[]>([])
   const [wantInput, setWantInput] = useState('')
+  const [showWantInput, setShowWantInput] = useState(false)
   const [photos, setPhotos] = useState<File[]>([])
   const [photoUrls, setPhotoUrls] = useState<string[]>([]) // preview URLs
   const [saving, setSaving] = useState(false)
@@ -36,6 +37,9 @@ export function AddItem() {
     if (wantInput.trim()) {
       setWants((prev) => [...prev, wantInput.trim()])
       setWantInput('')
+      setShowWantInput(false)
+    } else {
+      setShowWantInput(false)
     }
   }
 
@@ -115,19 +119,26 @@ export function AddItem() {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          padding: '16px 24px',
-          borderBottom: '1px solid var(--border-subtle)',
-          background: 'var(--surface-card)',
+          padding: '6px 20px',
         }}
       >
-        <button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
-          <X size={22} />
+        <button
+          onClick={() => navigate(-1)}
+          style={{
+            width: '40px', height: '40px', borderRadius: '50%',
+            border: '1.5px solid var(--border-subtle)',
+            background: 'var(--surface-card)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            cursor: 'pointer', flexShrink: 0, padding: 0,
+          }}
+        >
+          <X size={17} color="var(--ink)" />
         </button>
-        <h1 style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '18px' }}>Add a treasure</h1>
+        <h3 style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '18px', color: 'var(--ink)', margin: 0 }}>Add a treasure</h3>
         <button
           onClick={handleSave}
           disabled={saving}
-          style={{ background: 'none', border: 'none', cursor: saving ? 'not-allowed' : 'pointer', fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '16px', color: 'var(--swapp-green)', opacity: saving ? 0.5 : 1 }}
+          style={{ background: 'none', border: 'none', cursor: saving ? 'not-allowed' : 'pointer', fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '15px', color: 'var(--swapp-green)', opacity: saving ? 0.5 : 1, minWidth: '40px', textAlign: 'right' }}
         >
           {saving ? 'Saving…' : 'Save'}
         </button>
@@ -163,34 +174,89 @@ export function AddItem() {
       {/* Body: two-column on desktop, single column on mobile */}
       <div className="add-item-layout" style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'auto' }}>
         {/* Left / mobile: photo upload */}
-        <div className="add-item-photos" style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '16px', marginBottom: '4px' }}>Photos</div>
+        <div className="add-item-photos" style={{ padding: '6px 24px 20px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <div style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '14px', color: 'var(--ink)' }}>Photos</div>
 
-          {/* Large dropzone */}
-          <button
-            onClick={() => fileRef.current?.click()}
-            style={{
-              width: '100%',
-              minHeight: '200px',
-              borderRadius: 'var(--radius-card-lg)',
-              background: 'var(--parchment-deep)',
-              border: '2px dashed var(--border-subtle)',
-              cursor: 'pointer',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '8px',
-              color: 'var(--ink-soft)',
-              fontFamily: 'var(--font-display)',
-              fontWeight: 600,
-              fontSize: '14px',
-            }}
-          >
-            <Camera size={32} />
-            Click to add photos
-            <span style={{ fontSize: '12px', fontWeight: 400, color: 'var(--text-muted)' }}>Up to 5 photos</span>
-          </button>
+          {/* Photo row — primary add button + empty slots */}
+          <div style={{ display: 'flex', gap: '10px' }}>
+            {photoUrls.length === 0 ? (
+              <>
+                <button
+                  onClick={() => fileRef.current?.click()}
+                  style={{
+                    width: '96px',
+                    height: '96px',
+                    borderRadius: '12px',
+                    background: 'var(--surface-card)',
+                    border: '1.5px dashed rgba(51,50,43,0.3)',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '4px',
+                    flexShrink: 0,
+                    padding: 0,
+                  }}
+                >
+                  <Camera size={24} color="var(--swapp-green)" />
+                  <span style={{ fontSize: '12px', color: 'var(--text-muted)', fontFamily: 'var(--font-body)' }}>Add photo</span>
+                </button>
+                {[0, 1].map((i) => (
+                  <div
+                    key={i}
+                    style={{
+                      width: '96px',
+                      height: '96px',
+                      borderRadius: '12px',
+                      border: '1.5px dashed var(--border-subtle)',
+                      flexShrink: 0,
+                    }}
+                  />
+                ))}
+              </>
+            ) : (
+              <>
+                {photoUrls.map((url, i) => (
+                  <div
+                    key={i}
+                    style={{
+                      width: '96px',
+                      height: '96px',
+                      borderRadius: '12px',
+                      overflow: 'hidden',
+                      flexShrink: 0,
+                    }}
+                  >
+                    <img src={url} alt={`photo ${i + 1}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  </div>
+                ))}
+                {photoUrls.length < 5 && (
+                  <button
+                    onClick={() => fileRef.current?.click()}
+                    style={{
+                      width: '96px',
+                      height: '96px',
+                      borderRadius: '12px',
+                      background: 'var(--surface-card)',
+                      border: '1.5px dashed rgba(51,50,43,0.3)',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '4px',
+                      flexShrink: 0,
+                      padding: 0,
+                    }}
+                  >
+                    <Camera size={24} color="var(--swapp-green)" />
+                    <span style={{ fontSize: '12px', color: 'var(--text-muted)', fontFamily: 'var(--font-body)' }}>Add photo</span>
+                  </button>
+                )}
+              </>
+            )}
+          </div>
 
           <input
             ref={fileRef}
@@ -200,41 +266,10 @@ export function AddItem() {
             style={{ display: 'none' }}
             onChange={handlePhotoChange}
           />
-
-          {/* Thumbnails */}
-          <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-            {photoUrls.map((url, i) => (
-              <div
-                key={i}
-                style={{
-                  width: '90px',
-                  height: '90px',
-                  borderRadius: 'var(--radius-card)',
-                  overflow: 'hidden',
-                  flexShrink: 0,
-                }}
-              >
-                <img src={url} alt={`photo ${i + 1}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-              </div>
-            ))}
-            {photoUrls.length === 0 && [0, 1].map((i) => (
-              <div
-                key={i}
-                style={{
-                  width: '90px',
-                  height: '90px',
-                  borderRadius: 'var(--radius-card)',
-                  background: 'var(--ink-faint)',
-                  border: '1.5px dashed var(--border-subtle)',
-                  flexShrink: 0,
-                }}
-              />
-            ))}
-          </div>
         </div>
 
         {/* Right / mobile: form fields */}
-        <div className="add-item-fields" style={{ flex: 1, padding: '24px', display: 'flex', flexDirection: 'column', gap: '20px', maxWidth: '480px', width: '100%', margin: '0 auto', overflowY: 'auto', paddingBottom: '32px' }}>
+        <div className="add-item-fields" style={{ flex: 1, padding: '6px 24px 32px', display: 'flex', flexDirection: 'column', gap: '16px', maxWidth: '480px', width: '100%', margin: '0 auto', overflowY: 'auto' }}>
           <Input
             label="Title"
             placeholder="Give it a name"
@@ -277,45 +312,52 @@ export function AddItem() {
           {/* What do you want for it */}
           <div>
             <div style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '14px', marginBottom: '10px' }}>What do you want for it?</div>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '10px' }}>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
               {wants.map((w, i) => (
                 <Tag key={i} selected onRemove={() => removeWant(i)}>
                   {w}
                 </Tag>
               ))}
-            </div>
-            <div style={{ display: 'flex', gap: '8px' }}>
-              <input
-                value={wantInput}
-                onChange={(e) => setWantInput(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && addWant()}
-                placeholder="e.g. vinyl records"
-                style={{
-                  flex: 1,
-                  padding: '10px 14px',
-                  background: 'var(--cream)',
-                  border: '1.5px solid var(--border-subtle)',
-                  borderRadius: 'var(--radius-card)',
-                  fontFamily: 'var(--font-body)',
-                  fontSize: '16px',
-                  outline: 'none',
-                }}
-              />
-              <button
-                onClick={addWant}
-                style={{
-                  padding: '10px 14px',
-                  background: 'var(--swapp-green)',
-                  color: 'var(--parchment)',
-                  border: 'none',
-                  borderRadius: 'var(--radius-card)',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                }}
-              >
-                <Plus size={18} />
-              </button>
+              {showWantInput ? (
+                <input
+                  value={wantInput}
+                  onChange={(e) => setWantInput(e.target.value)}
+                  onKeyDown={(e) => { if (e.key === 'Enter') addWant(); if (e.key === 'Escape') { setWantInput(''); setShowWantInput(false) } }}
+                  onBlur={addWant}
+                  placeholder="e.g. vinyl records"
+                  autoFocus
+                  style={{
+                    padding: '7px 14px',
+                    background: '#fff',
+                    border: '1.5px solid var(--swapp-green)',
+                    borderRadius: 'var(--radius-pill)',
+                    fontFamily: 'var(--font-body)',
+                    fontWeight: 500,
+                    fontSize: '14px',
+                    outline: 'none',
+                    minHeight: '36px',
+                    width: '140px',
+                  }}
+                />
+              ) : (
+                <button
+                  onClick={() => setShowWantInput(true)}
+                  style={{
+                    padding: '7px 16px',
+                    minHeight: '36px',
+                    borderRadius: 'var(--radius-pill)',
+                    border: '1.5px dashed var(--border-subtle)',
+                    background: 'transparent',
+                    color: 'var(--ink)',
+                    fontFamily: 'var(--font-body)',
+                    fontWeight: 500,
+                    fontSize: '14px',
+                    cursor: 'pointer',
+                  }}
+                >
+                  + add a want
+                </button>
+              )}
             </div>
           </div>
 

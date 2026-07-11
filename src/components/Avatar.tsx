@@ -6,11 +6,13 @@ interface AvatarProps {
   size?: number
   color?: string
   style?: React.CSSProperties
+  onClick?: () => void
 }
 
-export function Avatar({ initials = '?', src, size = 40, color = 'var(--denim)', style }: AvatarProps) {
+export function Avatar({ initials = '?', src, size = 40, color = 'var(--denim)', style, onClick }: AvatarProps) {
   return (
     <div
+      onClick={onClick}
       style={{
         width: size,
         height: size,

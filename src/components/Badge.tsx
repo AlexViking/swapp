@@ -14,14 +14,16 @@ export function Badge({ children, color = 'var(--ink)', bg = 'var(--parchment-de
         display: 'inline-flex',
         alignItems: 'center',
         gap: '4px',
-        padding: '3px 10px',
+        padding: '5px 12px',
         borderRadius: 'var(--radius-pill)',
         background: bg,
         color,
         fontFamily: 'var(--font-display)',
         fontWeight: 700,
         fontSize: '12px',
-        letterSpacing: '0.04em',
+        letterSpacing: '0.14em',
+        textTransform: 'uppercase',
+        whiteSpace: 'nowrap',
         ...style,
       }}
     >

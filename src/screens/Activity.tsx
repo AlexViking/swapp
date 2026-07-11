@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router'
-import { ArrowLeftRight } from 'lucide-react'
 import { TabBar } from '../components/TabBar'
 import { DesktopNav } from '../components/DesktopNav'
 import { Button } from '../components/Button'
@@ -149,7 +148,11 @@ export function Activity() {
 
         return {
           id: s.id,
-          icon: <ArrowLeftRight size={16} color="#fff" />,
+          icon: (
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="var(--parchment)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M4 8h13M14 4l4 4-4 4M20 16H7M10 12l-4 4 4 4"/>
+            </svg>
+          ),
           iconBg: s.status === 'completed' ? 'var(--swapp-green)'
             : s.status === 'cancelled' ? 'var(--terracotta)'
             : s.status === 'confirmed' ? 'var(--denim)'
@@ -180,8 +183,8 @@ export function Activity() {
   return (
     <div style={{ minHeight: '100dvh', background: 'var(--surface-page)', display: 'flex', flexDirection: 'column', paddingBottom: '80px' }}>
       <DesktopNav />
-      <header className="mobile-header" style={{ padding: '24px 20px 16px' }}>
-        <h1 style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '28px' }}>Activity</h1>
+      <header className="mobile-header" style={{ padding: '6px 20px 12px' }}>
+        <h1 style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '26px', lineHeight: 1.15, color: 'var(--ink)', margin: 0 }}>Activity</h1>
       </header>
 
       <div style={{ flex: 1 }}>
@@ -196,7 +199,7 @@ export function Activity() {
         ) : (
           GROUP_ORDER.filter((g) => grouped[g]?.length).map((group) => (
             <div key={group}>
-              <div style={{ padding: '12px 20px 8px', fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '12px', letterSpacing: 'var(--tracking-caption)', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
+              <div style={{ padding: '12px 20px 8px', fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '12px', letterSpacing: '0.18em', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
                 {group}
               </div>
               {grouped[group]!.map((item) => (
@@ -212,8 +215,8 @@ export function Activity() {
                 >
                   <div
                     style={{
-                      width: '36px',
-                      height: '36px',
+                      width: '42px',
+                      height: '42px',
                       borderRadius: '50%',
                       background: item.iconBg,
                       display: 'flex',
@@ -224,9 +227,9 @@ export function Activity() {
                   >
                     {item.icon}
                   </div>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ fontFamily: 'var(--font-body)', fontSize: '16px', color: 'var(--ink)', marginBottom: '2px' }}>{item.title}</div>
-                    <div style={{ fontSize: '13px', color: 'var(--text-muted)' }}>{item.sub}</div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <p style={{ fontFamily: 'var(--font-body)', fontWeight: 700, fontSize: '15px', color: 'var(--ink)', margin: 0 }}>{item.title}</p>
+                    <p style={{ fontSize: '13.5px', color: 'var(--text-muted)', margin: '2px 0 0' }}>{item.sub}</p>
                   </div>
                   {item.action && (
                     <Button

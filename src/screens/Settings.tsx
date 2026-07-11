@@ -83,11 +83,11 @@ export function Settings() {
   }
 
   const Section = ({ title, children }: { title: string; children: React.ReactNode }) => (
-    <div>
-      <div style={{ padding: '20px 20px 8px', fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '12px', letterSpacing: 'var(--tracking-caption)', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+      <div style={{ padding: '0 0 8px', fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '12px', letterSpacing: '0.18em', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
         {title}
       </div>
-      <div style={{ background: 'var(--surface-card)', borderTop: '1px solid var(--border-subtle)', borderBottom: '1px solid var(--border-subtle)' }}>
+      <div className="settings-card" style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-card-lg)', boxShadow: 'var(--shadow-card)', padding: '6px 16px', display: 'flex', flexDirection: 'column' }}>
         {children}
       </div>
     </div>
@@ -101,7 +101,8 @@ export function Settings() {
         alignItems: 'center',
         justifyContent: 'space-between',
         width: '100%',
-        padding: '14px 20px',
+        padding: '0',
+        minHeight: '48px',
         background: 'none',
         border: 'none',
         borderBottom: '1px solid var(--border-subtle)',
@@ -112,10 +113,10 @@ export function Settings() {
         textAlign: 'left',
       }}
     >
-      <span>{label}</span>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--text-muted)', fontSize: '14px' }}>
-        {value && <span>{value}</span>}
-        <ChevronRight size={16} />
+      <span className="label" style={{ fontSize: '16px', color: 'var(--ink)' }}>{label}</span>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }} className="link-val">
+        {value && <span style={{ fontSize: '15px', color: 'var(--text-muted)' }}>{value}</span>}
+        <ChevronRight size={15} color="var(--text-muted)" />
       </div>
     </button>
   )
@@ -131,7 +132,7 @@ export function Settings() {
     checked: boolean
     onChange: (v: boolean) => void
   }) => (
-    <div style={{ padding: '14px 20px', borderBottom: '1px solid var(--border-subtle)' }}>
+    <div style={{ borderBottom: '1px solid var(--border-subtle)', minHeight: '48px', display: 'flex', alignItems: 'center' }}>
       <Toggle label={label} description={description} checked={checked} onChange={onChange} />
     </div>
   )
@@ -141,14 +142,24 @@ export function Settings() {
   return (
     <main style={{ minHeight: '100dvh', background: 'var(--surface-page)', display: 'flex', flexDirection: 'column' }}>
       <DesktopNav />
-      <header className="mobile-header" style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '16px 20px', background: 'var(--surface-card)', borderBottom: '1px solid var(--border-subtle)' }}>
-        <button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
-          <ArrowLeft size={22} />
+      <header className="mobile-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '6px 20px' }}>
+        <button
+          onClick={() => navigate(-1)}
+          style={{
+            width: '40px', height: '40px', borderRadius: '50%',
+            border: '1.5px solid var(--border-subtle)',
+            background: 'var(--surface-card)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            cursor: 'pointer', flexShrink: 0, padding: 0,
+          }}
+        >
+          <ArrowLeft size={19} color="var(--ink)" />
         </button>
-        <h1 style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '18px' }}>Settings</h1>
+        <h3 style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '18px', color: 'var(--ink)', margin: 0 }}>Settings</h3>
+        <span style={{ width: '40px' }} />
       </header>
 
-      <div style={{ flex: 1, overflowY: 'auto', paddingBottom: '32px' }}>
+      <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '16px', padding: '8px 20px 32px' }}>
         <Section title="Notifications">
           <ToggleRow
             label="New matches"
@@ -177,17 +188,13 @@ export function Settings() {
           <Row label="Email" value={session?.user?.email ?? ''} />
         </Section>
 
-        <div style={{ padding: '24px 20px 8px' }}>
-          <Button variant="ghost" size="md" fullWidth onClick={handleSignOut}>
-            Sign out
-          </Button>
-        </div>
-
-        <div style={{ padding: '8px 20px 32px' }}>
-          <Button variant="danger" size="md" fullWidth onClick={() => setDeleteOpen(true)}>
-            Delete my account
-          </Button>
-        </div>
+        <div style={{ flex: 1 }} />
+        <Button variant="ghost" size="md" fullWidth onClick={handleSignOut}>
+          Sign out
+        </Button>
+        <Button variant="danger" size="md" fullWidth onClick={() => setDeleteOpen(true)}>
+          Delete my account
+        </Button>
       </div>
 
       <Sheet open={cityOpen} onClose={() => setCityOpen(false)} title="Choose your city">
